@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Core.Interfaces;
 
 namespace API.Controllers
 {
@@ -11,11 +12,11 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private readonly StoreContext _storeContext;
+        private readonly IProductRepository _productRepository;
 
-        public ProductsController(StoreContext storeContext)
+        public ProductsController(IProductRepository productRepository)
         {
-            _storeContext = storeContext;
+            _productRepository = productRepository;
         }
         /*
         * Retrieving The Products data from the database
@@ -24,8 +25,8 @@ namespace API.Controllers
         * 2- Pagination
         */
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetProducts(){
-            var products =  await _storeContext.Products.ToListAsync();
+        public ActionResult<List<Product>> GetProducts(){
+            var products = _productRepository.GetProducts(filter: p => true);
             return Ok(products);
         }
         /*
@@ -33,7 +34,7 @@ namespace API.Controllers
         */
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id){
-            var product = await _storeContext.Products.FindAsync(id);
+            var product = await _productRepository.GetProductById(id);
             if(product == null){
                 return BadRequest();
             }
