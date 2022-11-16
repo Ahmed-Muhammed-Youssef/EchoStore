@@ -53,13 +53,18 @@ namespace Infrastructure.Data
         
         public async Task<Product> GetProductById(int id)
         {
-            var product = await _storeContext.Products.FindAsync(id);
+            var product = await _storeContext.Products
+                .Include(p => p.ProductBrand)
+                .Include(P => P.ProductType)
+                .FirstOrDefaultAsync(P => P.Id == id);
             return product;
         }
 
         public IReadOnlyList<Product> GetProducts(Func<Product, bool> filter)
         {
             var products = _storeContext.Products
+                .Include(p => p.ProductBrand)
+                .Include(P => P.ProductType)
                 .Where(filter == null ? p => true: filter)
                 .ToList<Product>();
             return products;
