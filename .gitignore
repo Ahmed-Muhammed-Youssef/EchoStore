@@ -5,7 +5,7 @@
 
 # Additional files
 appsettings.Development.json
-Dummy Queries/
+SeedQueries/
 
 # User-specific files
 *.rsuser
