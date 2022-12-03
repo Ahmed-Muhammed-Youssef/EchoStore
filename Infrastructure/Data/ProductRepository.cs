@@ -63,11 +63,14 @@ namespace Infrastructure.Data
             .AsNoTracking()
             .FirstOrDefaultAsync(brand => brand.Id == id);
 
-        public async Task<IReadOnlyList<ProductBrand>> GetBrands() => await _storeContext.ProductBrands.ToListAsync();
+        public async Task<IReadOnlyList<ProductBrand>> GetBrands() => await _storeContext.ProductBrands
+            .AsNoTracking()
+            .ToListAsync();
 
         public async Task<Product> GetProductById(int id)
         {
             var product = await _storeContext.Products
+                .AsNoTracking()
                 .Include(p => p.ProductBrand)
                 .Include(P => P.ProductType)
                 .FirstOrDefaultAsync(P => P.Id == id);
@@ -77,6 +80,7 @@ namespace Infrastructure.Data
         public IReadOnlyList<Product> GetProducts(Func<Product, bool> filter)
         {
             var products = _storeContext.Products
+                .AsNoTracking()
                 .Include(p => p.ProductBrand)
                 .Include(P => P.ProductType)
                 .Where(filter == null ? p => true : filter)
@@ -84,9 +88,13 @@ namespace Infrastructure.Data
             return products;
         }
 
-        public async Task<ProductType> GetProductType(int id) => await _storeContext.ProductTypes.FindAsync(id);
+        public async Task<ProductType> GetProductType(int id) => await _storeContext.ProductTypes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(type => type.Id == id);
 
-        public async Task<IReadOnlyList<ProductType>> GetProductTypes() => await _storeContext.ProductTypes.ToListAsync();
+        public async Task<IReadOnlyList<ProductType>> GetProductTypes() => await _storeContext.ProductTypes
+            .AsNoTracking()
+            .ToListAsync();
 
         public async Task<int> UpdateBrand(ProductBrand productBrand)
         {
