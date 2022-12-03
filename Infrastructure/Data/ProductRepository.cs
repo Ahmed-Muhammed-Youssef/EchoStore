@@ -17,40 +17,54 @@ namespace Infrastructure.Data
             _storeContext = storeContext;
         }
 
-        public Task<Product> AddProduct(Product product)
+        public async Task<Product> AddProduct(Product product)
         {
-            throw new NotImplementedException();
+            var d = await _storeContext.Products.AddAsync(product);
+            await SaveChangesAsync();
+            return d.Entity;
         }
 
-        public Task<ProductBrand> AddProductBrand(ProductBrand productBrand)
+        public async Task<ProductBrand> AddProductBrand(ProductBrand productBrand)
         {
-            throw new NotImplementedException();
+            var d = await _storeContext.ProductBrands.AddAsync(productBrand);
+            await SaveChangesAsync();
+            return d.Entity;
         }
 
-        public Task<ProductType> AddProductType(ProductType productType)
+        public async Task<ProductType> AddProductType(ProductType productType)
         {
-            throw new NotImplementedException();
+            var d = await _storeContext.ProductTypes.AddAsync(productType);
+            await SaveChangesAsync();
+            return d.Entity;
         }
 
-        public Task<ProductBrand> DeleteBrand(ProductBrand productBrand)
+        public async Task<ProductBrand> DeleteBrand(ProductBrand productBrand)
         {
-            throw new NotImplementedException();
+            var d =  _storeContext.ProductBrands.Remove(productBrand);
+            await SaveChangesAsync();
+            return d.Entity;
         }
 
-        public Task<Product> DeleteProduct(Product product)
+        public async Task<Product> DeleteProduct(Product product)
         {
-            throw new NotImplementedException();
+            var d = _storeContext.Products.Remove(product);
+            await SaveChangesAsync();
+            return d.Entity;
         }
 
-        public Task<ProductType> DeleteProductType(ProductType productType)
+        public async Task<ProductType> DeleteProductType(ProductType productType)
         {
-            throw new NotImplementedException();
+            var d = _storeContext.ProductTypes.Remove(productType);
+            await SaveChangesAsync();
+            return d.Entity;
         }
 
-        public async Task<ProductBrand> GetBrand(int id) => await _storeContext.ProductBrands.FindAsync(id);
-        
+        public async Task<ProductBrand> GetBrand(int id) => await _storeContext.ProductBrands
+            .AsNoTracking()
+            .FirstOrDefaultAsync(brand => brand.Id == id);
+
         public async Task<IReadOnlyList<ProductBrand>> GetBrands() => await _storeContext.ProductBrands.ToListAsync();
-        
+
         public async Task<Product> GetProductById(int id)
         {
             var product = await _storeContext.Products
@@ -65,7 +79,7 @@ namespace Infrastructure.Data
             var products = _storeContext.Products
                 .Include(p => p.ProductBrand)
                 .Include(P => P.ProductType)
-                .Where(filter == null ? p => true: filter)
+                .Where(filter == null ? p => true : filter)
                 .ToList<Product>();
             return products;
         }
@@ -73,20 +87,36 @@ namespace Infrastructure.Data
         public async Task<ProductType> GetProductType(int id) => await _storeContext.ProductTypes.FindAsync(id);
 
         public async Task<IReadOnlyList<ProductType>> GetProductTypes() => await _storeContext.ProductTypes.ToListAsync();
-        
-        public Task<ProductBrand> UpdateBrand(ProductBrand productBrand)
+
+        public async Task<int> UpdateBrand(ProductBrand productBrand)
         {
-            throw new NotImplementedException();
+            _storeContext.Entry(productBrand).State = EntityState.Modified;
+            return await SaveChangesAsync();
         }
 
-        public Task<Product> UpdateProduct(Product product)
+        public async Task<int> UpdateProduct(Product product)
         {
-            throw new NotImplementedException();
+            _storeContext.Entry(product).State = EntityState.Modified;
+            return await SaveChangesAsync();
         }
 
-        public Task<ProductType> UpdateProductType(ProductType productType)
+        public async Task<int> UpdateProductType(ProductType productType)
         {
-            throw new NotImplementedException();
+            _storeContext.Entry(productType).State = EntityState.Modified;
+            return await SaveChangesAsync();
+        }
+        private async Task<int> SaveChangesAsync()
+        {
+            int changes = 0;
+            try
+            {
+                changes = await _storeContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+            return changes;
         }
     }
 }
