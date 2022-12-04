@@ -1,7 +1,10 @@
+using API.DTOs;
+using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -11,10 +14,12 @@ namespace API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
+        private readonly IMapper mapper;
 
-        public ProductsController(IProductRepository productRepository)
+        public ProductsController(IProductRepository productRepository, IMapper mapper)
         {
             _productRepository = productRepository;
+            this.mapper = mapper;
         }
         /*
         * Retrieving The Products data from the database
@@ -24,20 +29,20 @@ namespace API.Controllers
         */
         // GET: api/products
         [HttpGet]
-        public ActionResult<List<Product>> GetProducts()
+        public ActionResult<List<ProductDto>> GetProducts()
         {
             var products = _productRepository.GetProducts(filter: p => true);
-            return Ok(products);
+            return Ok(products.Select(p => mapper.Map<Product, ProductDto>(p)));
         }
         // GET: api/products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public async Task<ActionResult<ProductDto>> GetProduct(int id)
         {
             var product = await _productRepository.GetProductById(id);
             if (product == null) {
                 return NotFound();
             }
-            return Ok(product);
+            return Ok(mapper.Map<Product, ProductDto>(product));
         }
         // DELETE: api/products/5
         [HttpDelete("{id}")]
