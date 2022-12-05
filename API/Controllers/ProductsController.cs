@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 namespace API.Controllers
 {
     [ApiController]
@@ -15,7 +14,6 @@ namespace API.Controllers
     {
         private readonly IProductRepository _productRepository;
         private readonly IMapper mapper;
-
         public ProductsController(IProductRepository productRepository, IMapper mapper)
         {
             _productRepository = productRepository;
