@@ -1,6 +1,8 @@
 using Core.Entities;
+using Core.Pagination;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Core.Interfaces
@@ -12,7 +14,8 @@ namespace Core.Interfaces
         Task<Product> GetProductById(int id);
         Task<Product> DeleteProduct(Product product);
         Task<int> UpdateProduct(Product product);
-        IReadOnlyList<Product> GetProducts(Func<Product, bool> filter);
+        IReadOnlyList<Product> GetProducts(Expression<Func<Product, bool>> filter,
+            Expression<Func<Product, object>> orderBy, ref PaginationInfo paginationInfo);
         // CRUD brands
         Task<ProductBrand> AddProductBrand(ProductBrand productBrand);
         Task<IReadOnlyList<ProductBrand>> GetBrands();

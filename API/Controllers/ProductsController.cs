@@ -2,9 +2,12 @@ using API.DTOs;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Pagination;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 namespace API.Controllers
 {
@@ -27,9 +30,40 @@ namespace API.Controllers
         */
         // GET: api/products
         [HttpGet]
-        public ActionResult<List<ProductDto>> GetProducts()
+        public ActionResult<List<ProductDto>> GetProducts(string sortBy, int? brandId, int? typeId,
+            [FromHeader] int pageNumber = 0, [FromHeader] int pageSize = 4)
         {
-            var products = _productRepository.GetProducts(filter: p => true);
+            var pInfo = new PaginationInfo(pageSize: pageSize, currentPageNumber: pageNumber);
+            Expression<Func<Product, object>> orderBy = p => p.Name;
+            Expression<Func<Product, bool>> filter = p => true;
+            if(brandId != null || typeId != null)
+            {
+                filter = p => (brandId == p.ProductBrandId) || 
+                (typeId == p.ProductTypeId);
+            }
+            switch (sortBy)
+            {
+                case "name":
+                    orderBy = p => p.Name;
+                    break;
+                case "price":
+                    orderBy = p => p.Price;
+                    break;
+                case "rate":
+                    orderBy = p => p.Rate;
+                    break;
+                default:
+                    break;
+            }
+            var products = _productRepository.GetProducts(
+                filter: filter,
+                orderBy: orderBy,
+                paginationInfo: ref pInfo
+            );
+            HttpContext.Response.Headers.Add("PaginationNumberOfItems", pInfo.NumberOfItems.ToString());
+            HttpContext.Response.Headers.Add("PaginationPageNumber", pInfo.CurrentPageNumber.ToString());
+            HttpContext.Response.Headers.Add("PaginationPageSize", pInfo.PageSize.ToString());
+            HttpContext.Response.Headers.Add("PaginationLastPage", pInfo.LastPage.ToString());
             return Ok(products.Select(p => mapper.Map<Product, ProductDto>(p)));
         }
         // GET: api/products/5

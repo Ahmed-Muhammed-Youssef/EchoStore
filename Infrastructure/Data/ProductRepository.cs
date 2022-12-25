@@ -1,9 +1,11 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
+using Core.Pagination;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Data
@@ -77,14 +79,23 @@ namespace Infrastructure.Data
             return product;
         }
 
-        public IReadOnlyList<Product> GetProducts(Func<Product, bool> filter)
+        public IReadOnlyList<Product> GetProducts(Expression<Func<Product, bool>> filter,
+            Expression<Func<Product, object>>orderBy, ref PaginationInfo paginationInfo)
         {
-            var products = _storeContext.Products
+            if(orderBy == null)
+            {
+                orderBy = (p => p.Id);
+            }
+            var productsQuery = _storeContext.Products
                 .AsNoTracking()
                 .Include(p => p.ProductBrand)
                 .Include(P => P.ProductType)
-                .Where(filter == null ? p => true : filter)
-                .ToList<Product>();
+                .Where(filter.Compile())
+                .OrderBy(orderBy.Compile());
+            var pCount = productsQuery.Count();
+            paginationInfo.NumberOfItems = pCount;
+            var products = productsQuery.Skip(paginationInfo.GetFirstElementIndex())
+                .Take(paginationInfo.PageSize).ToList();
             return products;
         }
 
