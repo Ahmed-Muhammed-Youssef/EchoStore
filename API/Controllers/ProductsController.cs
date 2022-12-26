@@ -22,24 +22,20 @@ namespace API.Controllers
             _productRepository = productRepository;
             this.mapper = mapper;
         }
-        /*
-        * Retrieving The Products data from the database
-        * should support:
-        * 1- Filtering
-        * 2- Pagination
-        */
         // GET: api/products
         [HttpGet]
         public ActionResult<List<ProductDto>> GetProducts(string sortBy, int? brandId, int? typeId,
-            [FromHeader] int pageNumber = 0, [FromHeader] int pageSize = 4)
+            string search = "", [FromHeader] int pageNumber = 0, [FromHeader] int pageSize = 4)
         {
             var pInfo = new PaginationInfo(pageSize: pageSize, currentPageNumber: pageNumber);
+            search = search.ToLower();
             Expression<Func<Product, object>> orderBy = p => p.Name;
             Expression<Func<Product, bool>> filter = p => true;
-            if(brandId != null || typeId != null)
+            if(brandId != null || typeId != null || !string.IsNullOrEmpty(search))
             {
-                filter = p => (brandId == p.ProductBrandId) || 
-                (typeId == p.ProductTypeId);
+                filter = p => (brandId == null || brandId == p.ProductBrandId) &&
+                (typeId == null || typeId == p.ProductTypeId) && (search == "" || p.Name.ToLower().Contains(search) 
+                || p.Description.ToLower().Contains(search));
             }
             switch (sortBy)
             {
