@@ -6,7 +6,7 @@
 # Additional files
 appsettings.Development.json
 SeedQueries/
-
+ssl
 # User-specific files
 *.rsuser
 *.suo
