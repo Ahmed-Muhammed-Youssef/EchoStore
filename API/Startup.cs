@@ -31,13 +31,13 @@ namespace API
             services.AddDbContext<StoreContext>(options => 
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
             );
-           /* services.AddCors(options => options.AddPolicy(
+            services.AddCors(options => options.AddPolicy(
                 "CorsPolicy",
                  policy =>
                  {
                      policy.AllowAnyHeader().AllowAnyMethod().WithOrigins(Configuration.GetValue<string>("AngularUrl"));
                  }
-                )) ;*/
+                ));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
@@ -61,7 +61,7 @@ namespace API
 
             app.UseStaticFiles();
 
-            // app.UseCors("CorsPolicy");
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
