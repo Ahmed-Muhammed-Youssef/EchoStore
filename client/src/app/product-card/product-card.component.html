@@ -1,0 +1,10 @@
+<div class="card">
+  
+  <img class="card-img-top" src="assets/placeholders/img.jpg" alt="...">
+  <div class="card-body">
+    <div class="card-title">{{product?.name}}</div>
+    <h2 class="price">${{product?.price}}</h2>
+  </div>
+  <button *ngIf="!isInCart" mat-raised-button color="primary" class="cart-button" (click)="AddToCart()">Add to cart</button>
+  <button *ngIf="isInCart" mat-raised-button color="warn" class="cart-button" (click)="RemoveFromCart()">Remove from cart</button>
+</div>

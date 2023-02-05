@@ -1,0 +1,31 @@
+.card {
+    border-radius: 0%;
+    align-items: center;
+    width: 18rem;
+    height: 390px;
+}
+.card-img-top{
+    border-radius: 0%;
+    height: 270px;
+}
+.cart-button {
+    position: absolute;
+    bottom: 8px;
+    width: 90%;
+}
+.card-body {
+    margin: 0px;
+    padding: 8px;
+    width: 100%;
+    font-size: large;
+}
+.card-title{
+    text-align: center;
+    height: 25px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.price{
+    text-align: center;
+}
