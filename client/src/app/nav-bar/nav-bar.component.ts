@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ProductService } from '../services/product.service';
 @Component({
   selector: 'app-nav-bar',
   templateUrl: './nav-bar.component.html',
@@ -6,9 +7,8 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 })
 export class NavBarComponent implements OnInit {
   sideNavOpened:boolean = false;
-  numberOfItems:number = 5;
   searchString:string = "";
-  constructor(private changeDetectorRef: ChangeDetectorRef) {
+  constructor(private changeDetectorRef: ChangeDetectorRef, public productService:ProductService) {
   }
   ngOnInit(): void {
     

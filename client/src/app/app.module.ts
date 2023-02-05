@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
+import { ProductCardComponent } from './product-card/product-card.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
@@ -16,12 +17,15 @@ import { SideNavComponent } from './side-nav/side-nav.component';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatInputModule} from '@angular/material/input';
-
+import { HomeComponent } from './home/home.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 @NgModule({
   declarations: [
     AppComponent,
     NavBarComponent,
-    SideNavComponent
+    SideNavComponent,
+    HomeComponent,
+    ProductCardComponent
   ],
   imports: [
     BrowserModule,
@@ -34,7 +38,8 @@ import {MatInputModule} from '@angular/material/input';
     MatButtonModule,
     MatBadgeModule,
     MatProgressSpinnerModule,
-    MatInputModule
+    MatInputModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
