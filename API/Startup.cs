@@ -10,6 +10,7 @@ using Infrastructure.Data;
 using Core.Interfaces;
 using API.Helpers;
 using API.Middleware;
+using StackExchange.Redis;
 
 namespace API
 {
@@ -26,11 +27,17 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ICartRepository, CartRepository>();
             services.AddControllers();
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddDbContext<StoreContext>(options => 
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
             );
+            services.AddSingleton<IConnectionMultiplexer>(config => {
+                var configuration = ConfigurationOptions.Parse(
+                    Configuration.GetConnectionString("Redis"), true);
+                return ConnectionMultiplexer.Connect(configuration);    
+            });
             services.AddCors(options => options.AddPolicy(
                 "CorsPolicy",
                  policy =>
