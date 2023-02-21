@@ -79,7 +79,7 @@ namespace API.Controllers
             _context.ProductBrands.Add(productBrand);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProductBrand", new { id = productBrand.Id }, productBrand);
+            return CreatedAtAction("PostProductBrand", new { id = productBrand.Id }, productBrand);
         }
 
         // DELETE: api/ProductBrands/5
