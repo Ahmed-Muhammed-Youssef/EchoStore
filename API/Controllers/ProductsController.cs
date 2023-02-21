@@ -24,13 +24,13 @@ namespace API.Controllers
         }
         // GET: api/products
         [HttpGet]
-        public ActionResult<List<ProductDto>> GetProducts(string sortBy, int? brandId, int? typeId,
+        public ActionResult<List<ProductInfoDto>> GetProductsInfo(string sortBy, int? brandId, int? typeId,
             string search = "", [FromHeader] int pageNumber = 0, [FromHeader] int pageSize = 4)
         {
             var pInfo = new PaginationInfo(pageSize: pageSize, currentPageNumber: pageNumber);
             search = search.ToLower();
-            Expression<Func<Product, object>> orderBy = p => p.Name;
-            Expression<Func<Product, bool>> filter = p => true;
+            Expression<Func<ProductInfo, object>> orderBy = p => p.Name;
+            Expression<Func<ProductInfo, bool>> filter = p => true;
             if(brandId != null || typeId != null || !string.IsNullOrEmpty(search))
             {
                 filter = p => (brandId == null || brandId == p.ProductBrandId) &&
@@ -51,7 +51,7 @@ namespace API.Controllers
                 default:
                     break;
             }
-            var products = _productRepository.GetProducts(
+            var products = _productRepository.GetProductsInfo(
                 filter: filter,
                 orderBy: orderBy,
                 paginationInfo: ref pInfo
@@ -60,55 +60,55 @@ namespace API.Controllers
             HttpContext.Response.Headers.Add("PaginationPageNumber", pInfo.CurrentPageNumber.ToString());
             HttpContext.Response.Headers.Add("PaginationPageSize", pInfo.PageSize.ToString());
             HttpContext.Response.Headers.Add("PaginationLastPage", pInfo.LastPage.ToString());
-            return Ok(products.Select(p => mapper.Map<Product, ProductDto>(p)));
+            return Ok(products.Select(p => mapper.Map<ProductInfo, ProductInfoDto>(p)));
         }
         // GET: api/products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductDto>> GetProduct(int id)
+        public async Task<ActionResult<ProductInfoDto>> GetProductInfo(int id)
         {
-            var product = await _productRepository.GetProductById(id);
+            var product = await _productRepository.GetProductInfoById(id);
             if (product == null) {
                 return NotFound();
             }
-            return Ok(mapper.Map<Product, ProductDto>(product));
+            return Ok(mapper.Map<ProductInfo, ProductInfoDto>(product));
         }
         // DELETE: api/products/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteProduct(int id)
+        public async Task<ActionResult> DeleteProductInfo(int id)
         {
-            var product = await _productRepository.GetProductById(id);
+            var product = await _productRepository.GetProductInfoById(id);
 
             if (product == null)
             {
                 return NotFound();
             }
-            await _productRepository.DeleteProduct(product);
+            await _productRepository.DeleteProductInfo(product);
             return NoContent();
         }
         // POST: api/products
         [HttpPost]
-        public async Task<ActionResult<ProductBrand>> AddProduct(Product product)
+        public async Task<ActionResult<ProductBrand>> AddProductInfo(ProductInfo product)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid data");
             }
-            product = await _productRepository.AddProduct(product);
+            product = await _productRepository.AddProductInfo(product);
             return Ok(product);
         }
         // PUT: api/products
         [HttpPut]
-        public async Task<ActionResult<ProductBrand>> UpdateProduct(Product product)
+        public async Task<ActionResult<ProductBrand>> UpdateProductInfo(ProductInfo product)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid data");
             }
-            if (await _productRepository.GetProductById(product.Id) == null)
+            if (await _productRepository.GetProductInfoById(product.Id) == null)
             {
                 return NotFound();
             }
-            await _productRepository.UpdateProduct(product);
+            await _productRepository.UpdateProductInfo(product);
             return Ok(product);
         }
 
