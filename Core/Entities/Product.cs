@@ -10,6 +10,5 @@ namespace Core.Entities
         public int ProductInfoId { get; set; }
         [Required]
         public ProductInfo ProductInfo { get; set; }
-        public Cart Cart { get; set; } = null;
     }
 }

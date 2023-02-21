@@ -18,10 +18,15 @@ namespace Infrastructure.Data
         {
             _storeContext = storeContext;
         }
-
         public async Task<Product> AddProduct(Product product)
         {
             var d = await _storeContext.Products.AddAsync(product);
+            await SaveChangesAsync();
+            return d.Entity;
+        }
+        public async Task<ProductInfo> AddProductInfo(ProductInfo productInfo)
+        {
+            var d = await _storeContext.ProductInfo.AddAsync(productInfo);
             await SaveChangesAsync();
             return d.Entity;
         }
@@ -47,13 +52,18 @@ namespace Infrastructure.Data
             return d.Entity;
         }
 
+        public async Task<ProductInfo> DeleteProductInfo(ProductInfo productInfo)
+        {
+            var d = _storeContext.ProductInfo.Remove(productInfo);
+            await SaveChangesAsync();
+            return d.Entity;
+        }
         public async Task<Product> DeleteProduct(Product product)
         {
             var d = _storeContext.Products.Remove(product);
             await SaveChangesAsync();
             return d.Entity;
         }
-
         public async Task<ProductType> DeleteProductType(ProductType productType)
         {
             var d = _storeContext.ProductTypes.Remove(productType);
@@ -69,9 +79,9 @@ namespace Infrastructure.Data
             .AsNoTracking()
             .ToListAsync();
 
-        public async Task<Product> GetProductById(int id)
+        public async Task<ProductInfo> GetProductInfoById(int id)
         {
-            var product = await _storeContext.Products
+            var product = await _storeContext.ProductInfo
                 .AsNoTracking()
                 .Include(p => p.ProductBrand)
                 .Include(P => P.ProductType)
@@ -79,14 +89,14 @@ namespace Infrastructure.Data
             return product;
         }
 
-        public IReadOnlyList<Product> GetProducts(Expression<Func<Product, bool>> filter,
-            Expression<Func<Product, object>>orderBy, ref PaginationInfo paginationInfo)
+        public IReadOnlyList<ProductInfo> GetProductsInfo(Expression<Func<ProductInfo, bool>> filter,
+            Expression<Func<ProductInfo, object>>orderBy, ref PaginationInfo paginationInfo)
         {
             if(orderBy == null)
             {
                 orderBy = (p => p.Id);
             }
-            var productsQuery = _storeContext.Products
+            var productsQuery = _storeContext.ProductInfo
                 .AsNoTracking()
                 .Include(p => p.ProductBrand)
                 .Include(P => P.ProductType)
@@ -113,7 +123,7 @@ namespace Infrastructure.Data
             return await SaveChangesAsync();
         }
 
-        public async Task<int> UpdateProduct(Product product)
+        public async Task<int> UpdateProductInfo(ProductInfo product)
         {
             _storeContext.Entry(product).State = EntityState.Modified;
             return await SaveChangesAsync();

@@ -11,11 +11,13 @@ namespace Core.Interfaces
     {
         // CRUD products
         Task<Product> AddProduct(Product product);
-        Task<Product> GetProductById(int id);
+        Task<ProductInfo> AddProductInfo(ProductInfo product);
+        Task<ProductInfo> GetProductInfoById(int id);
+        Task<ProductInfo> DeleteProductInfo(ProductInfo productInfo);
         Task<Product> DeleteProduct(Product product);
-        Task<int> UpdateProduct(Product product);
-        IReadOnlyList<Product> GetProducts(Expression<Func<Product, bool>> filter,
-            Expression<Func<Product, object>> orderBy, ref PaginationInfo paginationInfo);
+        Task<int> UpdateProductInfo(ProductInfo product);
+        IReadOnlyList<ProductInfo> GetProductsInfo(Expression<Func<ProductInfo, bool>> filter,
+            Expression<Func<ProductInfo, object>> orderBy, ref PaginationInfo paginationInfo);
         // CRUD brands
         Task<ProductBrand> AddProductBrand(ProductBrand productBrand);
         Task<IReadOnlyList<ProductBrand>> GetBrands();

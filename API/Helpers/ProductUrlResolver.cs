@@ -2,14 +2,10 @@
 using AutoMapper;
 using Core.Entities;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace API.Helpers
 {
-    public class ProductUrlResolver : IValueResolver<Product, ProductDto, string>
+    public class ProductUrlResolver : IValueResolver<ProductInfo, ProductInfoDto, string>
     {
         private readonly IConfiguration configuration;
 
@@ -17,7 +13,7 @@ namespace API.Helpers
         {
             this.configuration = configuration;
         }
-        public string Resolve(Product source, ProductDto destination, string destMember, ResolutionContext context)
+        public string Resolve(ProductInfo source, ProductInfoDto destination, string destMember, ResolutionContext context)
         {
             if(!string.IsNullOrEmpty(source.PictureUrl))
             {

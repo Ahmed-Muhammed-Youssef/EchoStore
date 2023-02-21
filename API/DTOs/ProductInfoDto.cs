@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs
 {
-    public class ProductDto
+    public class ProductInfoDto
     {
         public int Id { get; set; }
         [Required, MaxLength(4000), MinLength(1)]
