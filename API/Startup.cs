@@ -4,13 +4,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
 using Core.Interfaces;
 using API.Helpers;
 using API.Middleware;
 using StackExchange.Redis;
+using Infrastructure.Identity;
 
 namespace API
 {
@@ -30,13 +30,36 @@ namespace API
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddControllers();
             services.AddAutoMapper(typeof(MappingProfiles));
-            services.AddDbContext<StoreContext>(options => 
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
+            services.AddDbContext<StoreContext>(options =>
+            {
+                if (true)
+                {
+                    options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+                }
+                else
+                {
+                    /*
+                   * Production Configuration
+                   */
+                }
+            }
             );
             services.AddSingleton<IConnectionMultiplexer>(config => {
                 var configuration = ConfigurationOptions.Parse(
                     Configuration.GetConnectionString("Redis"), true);
                 return ConnectionMultiplexer.Connect(configuration);    
+            });
+            services.AddDbContext<AppIdentityDbContext>(options => {
+                if(true)
+                {
+                    options.UseSqlite(Configuration.GetConnectionString("IdentityConnection"));
+                }
+                else
+                {
+                    /*
+                    * Production Configuration
+                    */
+                }
             });
             services.AddCors(options => options.AddPolicy(
                 "CorsPolicy",
