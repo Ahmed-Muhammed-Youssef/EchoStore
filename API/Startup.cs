@@ -11,6 +11,7 @@ using API.Helpers;
 using API.Middleware;
 using StackExchange.Redis;
 using Infrastructure.Identity;
+using API.Extensions;
 
 namespace API
 {
@@ -61,6 +62,8 @@ namespace API
                     */
                 }
             });
+            // identity service extension method
+            services.AddIdentityService();
             services.AddCors(options => options.AddPolicy(
                 "CorsPolicy",
                  policy =>
