@@ -50,6 +50,40 @@ namespace API.Controllers
 
             return Ok(userDto);
         }
+        
+        /// <summary>
+        /// used to edit the current user data (only the address and display name)
+        /// </summary>
+        
+        // PUT: api/account/edit
+        [HttpPut("edit")]
+        [Authorize]
+        public async Task<ActionResult<UserDto>> EditCurrentUser(UserDto user)
+        {
+            var email = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            var signedInUser = await _userManager.FindUserWithAddressByEmail(email);
+            if (signedInUser == null)
+            {
+                return BadRequest();
+            }
+            if(signedInUser.Email != user.Email)
+            {
+                return BadRequest();
+            }
+            // update the app user data
+            signedInUser.DisplayName = user.DisplayName;
+            // update the app user address
+            signedInUser.DisplayName = user.DisplayName;           
+            signedInUser.Address = mapper.Map<AddressDto, Address>(user.Address);
+           
+            var res = await _userManager.UpdateAsync(signedInUser);
+            
+            if (!res.Succeeded)
+            {
+                return BadRequest();
+            }
+            return Ok(user);
+        }
         // POST: api/account/register
         [HttpPost("register")]
         public async Task<ActionResult<TokenDto>> Register([FromBody] RegisterDto registerDto)
