@@ -1,8 +1,11 @@
 ﻿using API.DTOs;
 using Core.Entities.Identity;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -21,6 +24,26 @@ namespace API.Controllers
             this._userManager = userManager;
             this._signInManager = signInManager;
             this.jwtService = jwtService;
+        }
+        // GET: api/account
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        {
+            var email = HttpContext.User?.Claims?.FirstOrDefault( c => c.Type == ClaimTypes.Email)?.Value;
+            var user = await _userManager.FindByEmailAsync(email);
+            if(user == null)
+            {
+                return BadRequest();
+            }
+            var userDto = new UserDto()
+            {
+                DisplayName = user.DisplayName,
+                Email = user.Email,
+                UserName = user.UserName
+            };
+
+            return Ok(userDto);
         }
         // POST: api/account/register
         [HttpPost("register")]
