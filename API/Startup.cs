@@ -12,6 +12,7 @@ using API.Middleware;
 using StackExchange.Redis;
 using Infrastructure.Identity;
 using API.Extensions;
+using Infrastructure.Services;
 
 namespace API
 {
@@ -29,6 +30,7 @@ namespace API
         {
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<IJwtService, JwtService>();
             services.AddControllers();
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddDbContext<StoreContext>(options =>
