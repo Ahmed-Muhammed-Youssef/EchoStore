@@ -1,4 +1,5 @@
 ﻿using API.DTOs;
+using API.Extensions;
 using Core.Entities.Identity;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -31,7 +32,7 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             var email = HttpContext.User?.Claims?.FirstOrDefault( c => c.Type == ClaimTypes.Email)?.Value;
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindUserWithAddressByEmail(email);
             if(user == null)
             {
                 return BadRequest();
@@ -40,7 +41,16 @@ namespace API.Controllers
             {
                 DisplayName = user.DisplayName,
                 Email = user.Email,
-                UserName = user.UserName
+                UserName = user.UserName,
+                Address = new AddressDto()
+                {
+                    FirstName = user.Address?.FirstName,
+                    LastName = user.Address?.LastName,
+                    City = user.Address?.City,
+                    Street = user.Address?.Street,
+                    State = user.Address?.State,
+                    Zipcode = user.Address?.Zipcode
+                }
             };
 
             return Ok(userDto);
