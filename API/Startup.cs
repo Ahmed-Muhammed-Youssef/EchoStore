@@ -65,7 +65,7 @@ namespace API
                 }
             });
             // identity service extension method
-            services.AddIdentityService();
+            services.AddIdentityService(Configuration);
             services.AddCors(options => options.AddPolicy(
                 "CorsPolicy",
                  policy =>
