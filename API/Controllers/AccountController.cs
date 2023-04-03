@@ -1,5 +1,6 @@
 ﻿using API.DTOs;
 using API.Extensions;
+using AutoMapper;
 using Core.Entities.Identity;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -18,13 +19,15 @@ namespace API.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IJwtService jwtService;
+        private readonly IMapper mapper;
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            IJwtService jwtService)
+            IJwtService jwtService, IMapper mapper)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             this.jwtService = jwtService;
+            this.mapper = mapper;
         }
         // GET: api/account
         [HttpGet]
@@ -42,15 +45,7 @@ namespace API.Controllers
                 DisplayName = user.DisplayName,
                 Email = user.Email,
                 UserName = user.UserName,
-                Address = new AddressDto()
-                {
-                    FirstName = user.Address?.FirstName,
-                    LastName = user.Address?.LastName,
-                    City = user.Address?.City,
-                    Street = user.Address?.Street,
-                    State = user.Address?.State,
-                    Zipcode = user.Address?.Zipcode
-                }
+                Address = mapper.Map<Address, AddressDto>(user.Address)
             };
 
             return Ok(userDto);
