@@ -22,7 +22,33 @@ namespace API.Controllers
             this._signInManager = signInManager;
             this.jwtService = jwtService;
         }
-        // POST: api/account
+        // POST: api/account/register
+        [HttpPost("register")]
+        public async Task<ActionResult<TokenDto>> Register([FromBody] RegisterDto registerDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid input.");
+            }
+            var user = new AppUser()
+            {
+                DisplayName = registerDto.DisplayName,
+                Email = registerDto.Email,
+                UserName = registerDto.UserName
+            };
+            var result = await _userManager.CreateAsync(user, registerDto.Password);
+            if (!result.Succeeded)
+            {
+                return BadRequest();
+            }
+            var tokenDto = new TokenDto()
+            {
+                Email = user.Email,
+                Token = jwtService.CreatToken(user)
+            };
+            return Ok(tokenDto);
+        }
+        // POST: api/account/login
         [HttpPost("login")]
         public async Task<ActionResult<TokenDto>> Login([FromBody]LoginDto loginDto)
         {
@@ -40,7 +66,6 @@ namespace API.Controllers
             {
                 return Unauthorized(loginDto);
             }
-            // Token Generation is not implemented yet.
             var tokenDto = new TokenDto()
             {
                 Email = user.Email,
