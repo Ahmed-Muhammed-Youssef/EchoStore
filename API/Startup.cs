@@ -76,6 +76,25 @@ namespace API
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+                var securityScheme = new OpenApiSecurityScheme
+                {
+                    Description = "JWT Auth Bearer Scheme",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    Reference = new OpenApiReference()
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "bearer"
+                    }
+                };
+                c.AddSecurityDefinition("bearer", securityScheme);
+                var securityRequirement = new OpenApiSecurityRequirement()
+                {
+                    { securityScheme, new[]{"bearer"} }
+                };
+                c.AddSecurityRequirement(securityRequirement);
             });
         }
 
