@@ -92,7 +92,12 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid input.");
             }
-            var user = new AppUser()
+            var user = await _userManager.FindByEmailAsync(registerDto.Email);
+            if(user != null)
+            {
+                return BadRequest("Used Email");
+            }
+            user = new AppUser()
             {
                 DisplayName = registerDto.DisplayName,
                 Email = registerDto.Email,
