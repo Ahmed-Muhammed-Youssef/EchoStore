@@ -8,9 +8,14 @@ namespace Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
-            builder.OwnsOne(oi => oi.ItemOrdered, i => { i.WithOwner(); });
+            // Properties
             builder.Property(oi => oi.Price)
-                .HasColumnType("decimal(18,2)");
+                .HasColumnType("decimal(18,2)")
+                .IsRequired();
+            builder.Property(oi => oi.Quantity)
+                .IsRequired();
+
+            builder.OwnsOne(oi => oi.ItemOrdered, i => { i.WithOwner(); });
         }
     }
 }

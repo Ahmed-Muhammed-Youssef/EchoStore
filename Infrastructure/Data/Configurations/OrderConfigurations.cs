@@ -9,11 +9,23 @@ namespace Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            builder.OwnsOne(O => O.ShipToAddress, a => { a.WithOwner(); });
+
+            // properties
             builder.Property(o => o.Status)
-                .HasConversion<string>(s => s.ToString(), s => (OrderStatus)Enum.Parse(typeof(OrderStatus), s));
+                .HasConversion<string>(s => s.ToString(), s => (OrderStatus)Enum.Parse(typeof(OrderStatus), s))
+                .IsRequired();
+            builder.Property(o => o.BuyerEmail)
+                .IsRequired();
+            builder.Property(o => o.OrderDate)
+                .IsRequired();
+            builder.Property(o => o.Subtotal)
+                .IsRequired()
+                .HasColumnType("decimal(18,2)");
+            
+            builder.OwnsOne(O => O.ShipToAddress, a => { a.WithOwner(); });
             builder.HasMany(o => o.OrderItems)
                 .WithOne()
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         }
 
