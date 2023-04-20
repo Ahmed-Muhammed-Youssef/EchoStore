@@ -27,6 +27,8 @@ namespace Infrastructure.Data.Configurations
                 .WithOne()
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(o => o.DeliveryMethod)
+                .WithOne();
         }
 
     }
