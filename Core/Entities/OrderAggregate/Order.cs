@@ -26,6 +26,9 @@ namespace Core.Entities.OrderAggregate
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public string PaymentIntentId { get; set; }
 
+        // Foreign Keys
+        public int DeliveryMethodId { get; set; }
+
         // Navigation Properties
         public DeliveryMethod DeliveryMethod { get; set; }
         public IReadOnlyList<OrderItem> OrderItems { get; set; }

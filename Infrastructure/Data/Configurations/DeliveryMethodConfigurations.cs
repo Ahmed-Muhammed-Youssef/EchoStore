@@ -12,6 +12,11 @@ namespace Infrastructure.Data.Configurations
             builder.Property(dm => dm.DeliveryTime).IsRequired();
             builder.Property(dm => dm.Desciption).IsRequired();
             builder.Property(dm => dm.ShortName).IsRequired();
+
+            builder.HasOne<Order>()
+                .WithOne(o => o.DeliveryMethod)
+                .HasForeignKey<Order>(o => o.DeliveryMethodId)
+                .IsRequired();
         }
     }
 }
