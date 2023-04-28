@@ -18,68 +18,82 @@ namespace Infrastructure.Data
         {
             _storeContext = storeContext;
         }
-        public async Task<Product> AddProduct(Product product)
+        public async Task<Product> AddProductAsync(Product product)
         {
             var d = await _storeContext.Products.AddAsync(product);
-            await SaveChangesAsync();
+            var pi = await _storeContext.Products.Where(p => p.Id == d.Entity.Id).Select(p => p.ProductInfo).FirstOrDefaultAsync();
+            await IncrementProductInfoAmountAndSaveChanges(pi);
             return d.Entity;
         }
-        public async Task<ProductInfo> AddProductInfo(ProductInfo productInfo)
+        public async Task<Product> RemoveProductAsync(Product product)
+        {
+            var d = _storeContext.Products.Remove(product);
+            var pi = await _storeContext.Products.Where(p => p.Id == d.Entity.Id).Select(p => p.ProductInfo).FirstOrDefaultAsync();
+            await DecrementProductInfoAmountAndSaveChanges(pi);
+            return d.Entity;
+        }
+        public async Task<IReadOnlyList<Product>> GetProductsByProductInfoIdAsync(int productInfoId, int quantity)
+        {
+            return await _storeContext.Products
+                .Where(p => p.ProductInfoId == productInfoId)
+                .Take(quantity)
+                .ToListAsync();
+        }
+        public async Task<ProductInfo> AddProductInfoAsync(ProductInfo productInfo)
         {
             var d = await _storeContext.ProductInfo.AddAsync(productInfo);
             await SaveChangesAsync();
             return d.Entity;
         }
-
-        public async Task<ProductBrand> AddProductBrand(ProductBrand productBrand)
+        public async Task<ProductBrand> AddProductBrandAsync(ProductBrand productBrand)
         {
             var d = await _storeContext.ProductBrands.AddAsync(productBrand);
             await SaveChangesAsync();
             return d.Entity;
         }
-
-        public async Task<ProductType> AddProductType(ProductType productType)
+        public async Task<int> GetProductsCountPerProductInfoAsync(int productInfoId)
+        {
+            return await _storeContext.Products
+                .Where(p => p.ProductInfoId == productInfoId)
+                .CountAsync();
+        }
+        public async Task<ProductType> AddProductTypeAsync(ProductType productType)
         {
             var d = await _storeContext.ProductTypes.AddAsync(productType);
             await SaveChangesAsync();
             return d.Entity;
         }
-
-        public async Task<ProductBrand> DeleteBrand(ProductBrand productBrand)
+        public async Task<ProductBrand> DeleteBrandAsync(ProductBrand productBrand)
         {
-            var d =  _storeContext.ProductBrands.Remove(productBrand);
+            var d = _storeContext.ProductBrands.Remove(productBrand);
             await SaveChangesAsync();
             return d.Entity;
         }
-
-        public async Task<ProductInfo> DeleteProductInfo(ProductInfo productInfo)
+        public async Task<ProductInfo> DeleteProductInfoAsync(ProductInfo productInfo)
         {
             var d = _storeContext.ProductInfo.Remove(productInfo);
             await SaveChangesAsync();
             return d.Entity;
         }
-        public async Task<Product> DeleteProduct(Product product)
+        public async Task<Product> DeleteProductAsync(Product product)
         {
             var d = _storeContext.Products.Remove(product);
             await SaveChangesAsync();
             return d.Entity;
         }
-        public async Task<ProductType> DeleteProductType(ProductType productType)
+        public async Task<ProductType> DeleteProductTypeAsync(ProductType productType)
         {
             var d = _storeContext.ProductTypes.Remove(productType);
             await SaveChangesAsync();
             return d.Entity;
         }
-
-        public async Task<ProductBrand> GetBrand(int id) => await _storeContext.ProductBrands
+        public async Task<ProductBrand> GetBrandAsync(int id) => await _storeContext.ProductBrands
             .AsNoTracking()
             .FirstOrDefaultAsync(brand => brand.Id == id);
-
-        public async Task<IReadOnlyList<ProductBrand>> GetBrands() => await _storeContext.ProductBrands
+        public async Task<IReadOnlyList<ProductBrand>> GetBrandsAsync() => await _storeContext.ProductBrands
             .AsNoTracking()
             .ToListAsync();
-
-        public async Task<ProductInfo> GetProductInfoById(int id)
+        public async Task<ProductInfo> GetProductInfoByIdAsync(int id)
         {
             var product = await _storeContext.ProductInfo
                 .AsNoTracking()
@@ -88,11 +102,10 @@ namespace Infrastructure.Data
                 .FirstOrDefaultAsync(P => P.Id == id);
             return product;
         }
-
         public IReadOnlyList<ProductInfo> GetProductsInfo(Expression<Func<ProductInfo, bool>> filter,
-            Expression<Func<ProductInfo, object>>orderBy, ref PaginationInfo paginationInfo)
+            Expression<Func<ProductInfo, object>> orderBy, ref PaginationInfo paginationInfo)
         {
-            if(orderBy == null)
+            if (orderBy == null)
             {
                 orderBy = (p => p.Id);
             }
@@ -108,28 +121,23 @@ namespace Infrastructure.Data
                 .Take(paginationInfo.PageSize).ToList();
             return products;
         }
-
-        public async Task<ProductType> GetProductType(int id) => await _storeContext.ProductTypes
+        public async Task<ProductType> GetProductTypeAsync(int id) => await _storeContext.ProductTypes
             .AsNoTracking()
             .FirstOrDefaultAsync(type => type.Id == id);
-
-        public async Task<IReadOnlyList<ProductType>> GetProductTypes() => await _storeContext.ProductTypes
+        public async Task<IReadOnlyList<ProductType>> GetProductTypesAsync() => await _storeContext.ProductTypes
             .AsNoTracking()
             .ToListAsync();
-
-        public async Task<int> UpdateBrand(ProductBrand productBrand)
+        public async Task<int> UpdateBrandAsync(ProductBrand productBrand)
         {
             _storeContext.Entry(productBrand).State = EntityState.Modified;
             return await SaveChangesAsync();
         }
-
-        public async Task<int> UpdateProductInfo(ProductInfo product)
+        public async Task<int> UpdateProductInfoAsync(ProductInfo product)
         {
             _storeContext.Entry(product).State = EntityState.Modified;
             return await SaveChangesAsync();
         }
-
-        public async Task<int> UpdateProductType(ProductType productType)
+        public async Task<int> UpdateProductTypeAsync(ProductType productType)
         {
             _storeContext.Entry(productType).State = EntityState.Modified;
             return await SaveChangesAsync();
@@ -147,5 +155,17 @@ namespace Infrastructure.Data
             }
             return changes;
         }
+        // Utitlity
+        private async Task IncrementProductInfoAmountAndSaveChanges(ProductInfo productInfoId)
+        {
+            productInfoId.AvailableAmount++;
+            await this.UpdateProductInfoAsync(productInfoId);
+        }
+        private async Task DecrementProductInfoAmountAndSaveChanges(ProductInfo productInfoId)
+        {
+            if (productInfoId.AvailableAmount > 1) { productInfoId.AvailableAmount--; }
+            await this.UpdateProductInfoAsync(productInfoId);
+        }
+
     }
 }
