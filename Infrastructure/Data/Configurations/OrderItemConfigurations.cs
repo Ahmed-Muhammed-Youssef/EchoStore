@@ -4,18 +4,20 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Data.Configurations
 {
-    public class OrderItemConfigurations : IEntityTypeConfiguration<OrderItem>
+    public class OrderItemConfigurations : IEntityTypeConfiguration<OrderedProductInfo>
     {
-        public void Configure(EntityTypeBuilder<OrderItem> builder)
+        public void Configure(EntityTypeBuilder<OrderedProductInfo> builder)
         {
             // Properties
-            builder.Property(oi => oi.Price)
-                .HasColumnType("decimal(18,2)")
-                .IsRequired();
-            builder.Property(oi => oi.Quantity)
+            builder.Property(opi => opi.Quantity)
                 .IsRequired();
 
-            builder.OwnsOne(oi => oi.ItemOrdered, i => { i.WithOwner(); });
+            // Relationships
+            // productInfo
+            builder.HasOne(opi => opi.ProductInfo)
+                .WithMany()
+                .HasForeignKey(opi => opi.ProductInfoId)
+                .IsRequired();
         }
     }
 }

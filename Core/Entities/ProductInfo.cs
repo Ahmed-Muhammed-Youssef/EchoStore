@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Core.Entities
@@ -13,18 +14,23 @@ namespace Core.Entities
         [Required]
         public decimal Price { get; set; }
         [Required]
-        public uint Amount { get; set; }
+        public uint AvailableAmount { get; set; }
         [Required]
         public float Rate { get; set; } = 0;
         [Required]
         public string PictureUrl { get; set; }
-        [Required]
-        public ProductType ProductType { get; set; }
+
+        // Forigen Keys
         [Required]
         public int ProductTypeId { get; set; } // many to one relationship 
         [Required]
-        public ProductBrand ProductBrand { get; set; }
-        [Required]
         public int ProductBrandId { get; set; } // many to one relationship 
+
+        // Navigation Properties
+        [Required]
+        public ProductType ProductType { get; set; }
+        [Required]
+        public ProductBrand ProductBrand { get; set; }
+        public ICollection<Product> Products { get; set; }
     }
 }

@@ -9,12 +9,12 @@ namespace Core.Entities.OrderAggregate
         {
         }
 
-        public Order(string buyerEmail, Address shipToAddress, DeliveryMethod deliveryMethod, IReadOnlyList<OrderItem> orderItems, decimal subtotal)
+        public Order(string buyerEmail, Address shipToAddress, DeliveryMethod deliveryMethod, IReadOnlyList<OrderedProductInfo> orderItems, decimal subtotal)
         {
             BuyerEmail = buyerEmail ?? throw new ArgumentNullException(nameof(buyerEmail));
             ShipToAddress = shipToAddress ?? throw new ArgumentNullException(nameof(shipToAddress));
             DeliveryMethod = deliveryMethod ?? throw new ArgumentNullException(nameof(deliveryMethod));
-            OrderItems = orderItems ?? throw new ArgumentNullException(nameof(orderItems));
+            OrderedProductInfo = orderItems ?? throw new ArgumentNullException(nameof(orderItems));
             Subtotal = subtotal;
         }
 
@@ -31,7 +31,7 @@ namespace Core.Entities.OrderAggregate
 
         // Navigation Properties
         public DeliveryMethod DeliveryMethod { get; set; }
-        public IReadOnlyList<OrderItem> OrderItems { get; set; }
+        public IReadOnlyList<OrderedProductInfo> OrderedProductInfo { get; set; }
 
         // Utility
         public decimal GetTotal()

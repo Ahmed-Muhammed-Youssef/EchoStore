@@ -66,7 +66,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductInfoDto>> GetProductInfo(int id)
         {
-            var product = await _productRepository.GetProductInfoById(id);
+            var product = await _productRepository.GetProductInfoByIdAsync(id);
             if (product == null) {
                 return NotFound();
             }
@@ -76,13 +76,13 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProductInfo(int id)
         {
-            var product = await _productRepository.GetProductInfoById(id);
+            var product = await _productRepository.GetProductInfoByIdAsync(id);
 
             if (product == null)
             {
                 return NotFound();
             }
-            await _productRepository.DeleteProductInfo(product);
+            await _productRepository.DeleteProductInfoAsync(product);
             return NoContent();
         }
         // POST: api/products
@@ -93,7 +93,7 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid data");
             }
-            product = await _productRepository.AddProductInfo(product);
+            product = await _productRepository.AddProductInfoAsync(product);
             return Ok(product);
         }
         // PUT: api/products
@@ -104,11 +104,11 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid data");
             }
-            if (await _productRepository.GetProductInfoById(product.Id) == null)
+            if (await _productRepository.GetProductInfoByIdAsync(product.Id) == null)
             {
                 return NotFound();
             }
-            await _productRepository.UpdateProductInfo(product);
+            await _productRepository.UpdateProductInfoAsync(product);
             return Ok(product);
         }
 
@@ -119,14 +119,14 @@ namespace API.Controllers
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
         {
-            var brands = await _productRepository.GetBrands();
+            var brands = await _productRepository.GetBrandsAsync();
             return Ok(brands);
         }
         // GET: api/products/brands/5
         [HttpGet("brands/{id}")]
         public async Task<ActionResult<ProductBrand>> GetProductBrand(int id)
         {
-            var productBrand = await _productRepository.GetBrand(id);
+            var productBrand = await _productRepository.GetBrandAsync(id);
 
             if (productBrand == null)
             {
@@ -139,13 +139,13 @@ namespace API.Controllers
         [HttpDelete("brands/{id}")]
         public async Task<ActionResult> DeleteProductBrand(int id)
         {
-            var brand = await _productRepository.GetBrand(id);
+            var brand = await _productRepository.GetBrandAsync(id);
 
             if (brand == null)
             {
                 return NotFound();
             }
-            await _productRepository.DeleteBrand(brand);
+            await _productRepository.DeleteBrandAsync(brand);
             return NoContent();
         }
         // POST: api/products/brands
@@ -156,7 +156,7 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid data");
             }
-            var brand = await _productRepository.AddProductBrand(newProductBrand);
+            var brand = await _productRepository.AddProductBrandAsync(newProductBrand);
             return Ok(brand);
         }
         // PUT: api/products/brands
@@ -168,11 +168,11 @@ namespace API.Controllers
                 return BadRequest("Invalid data");
             }
 
-            if (await _productRepository.GetBrand(brand.Id) == null)
+            if (await _productRepository.GetBrandAsync(brand.Id) == null)
             {
                 return NotFound();
             }
-            await _productRepository.UpdateBrand(brand);
+            await _productRepository.UpdateBrandAsync(brand);
             return Ok(brand);
         }
 
@@ -183,14 +183,14 @@ namespace API.Controllers
         [HttpGet("types")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductTypes()
         {
-            var types = await _productRepository.GetProductTypes();
+            var types = await _productRepository.GetProductTypesAsync();
             return Ok(types);
         }
         // GET: api/products/types/5
         [HttpGet("types/{id}")]
         public async Task<ActionResult<ProductBrand>> GetProductType(int id)
         {
-            var productType = await _productRepository.GetProductType(id);
+            var productType = await _productRepository.GetProductTypeAsync(id);
 
             if (productType == null)
             {
@@ -203,13 +203,13 @@ namespace API.Controllers
         [HttpDelete("types/{id}")]
         public async Task<ActionResult> DeleteProductType(int id)
         {
-            var type = await _productRepository.GetProductType(id);
+            var type = await _productRepository.GetProductTypeAsync(id);
 
             if (type == null)
             {
                 return NotFound();
             }
-            await _productRepository.DeleteProductType(type);
+            await _productRepository.DeleteProductTypeAsync(type);
             return NoContent();
         }
         // POST: api/products/types
@@ -220,7 +220,7 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid data");
             }
-            type = await _productRepository.AddProductType(type);
+            type = await _productRepository.AddProductTypeAsync(type);
             return Ok(type);
         }
         // PUT: api/products/types
@@ -232,11 +232,11 @@ namespace API.Controllers
                 return BadRequest("Invalid data");
             }
 
-            if (await _productRepository.GetProductType(type.Id) == null)
+            if (await _productRepository.GetProductTypeAsync(type.Id) == null)
             {
                 return NotFound();
             }
-           await _productRepository.UpdateProductType(type);
+           await _productRepository.UpdateProductTypeAsync(type);
             return Ok(type);
         }
     }

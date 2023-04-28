@@ -10,25 +10,28 @@ namespace Core.Interfaces
     public interface IProductRepository
     {
         // CRUD products
-        Task<Product> AddProduct(Product product);
-        Task<ProductInfo> AddProductInfo(ProductInfo product);
-        Task<ProductInfo> GetProductInfoById(int id);
-        Task<ProductInfo> DeleteProductInfo(ProductInfo productInfo);
-        Task<Product> DeleteProduct(Product product);
-        Task<int> UpdateProductInfo(ProductInfo product);
+        Task<Product> AddProductAsync(Product product);
+        Task<Product> RemoveProductAsync(Product product);
+        Task<IReadOnlyList<Product>> GetProductsByProductInfoIdAsync(int productInfoId, int quantity);
+        Task<int> GetProductsCountPerProductInfoAsync(int productInfoId);
+        Task<ProductInfo> AddProductInfoAsync(ProductInfo product);
+        Task<ProductInfo> GetProductInfoByIdAsync(int id);
+        Task<ProductInfo> DeleteProductInfoAsync(ProductInfo productInfo);
+        Task<Product> DeleteProductAsync(Product product);
+        Task<int> UpdateProductInfoAsync(ProductInfo product);
         IReadOnlyList<ProductInfo> GetProductsInfo(Expression<Func<ProductInfo, bool>> filter,
             Expression<Func<ProductInfo, object>> orderBy, ref PaginationInfo paginationInfo);
         // CRUD brands
-        Task<ProductBrand> AddProductBrand(ProductBrand productBrand);
-        Task<IReadOnlyList<ProductBrand>> GetBrands();
-        Task<ProductBrand> GetBrand(int id);
-        Task<ProductBrand> DeleteBrand(ProductBrand productBrand);
-        Task<int> UpdateBrand(ProductBrand productBrand);
+        Task<ProductBrand> AddProductBrandAsync(ProductBrand productBrand);
+        Task<IReadOnlyList<ProductBrand>> GetBrandsAsync();
+        Task<ProductBrand> GetBrandAsync(int id);
+        Task<ProductBrand> DeleteBrandAsync(ProductBrand productBrand);
+        Task<int> UpdateBrandAsync(ProductBrand productBrand);
         // CRUD product types
-        Task<ProductType> AddProductType(ProductType productType);
-        Task<IReadOnlyList<ProductType>> GetProductTypes();
-        Task<ProductType> GetProductType(int id);
-        Task<ProductType> DeleteProductType(ProductType productType);
-        Task<int> UpdateProductType(ProductType productType);
+        Task<ProductType> AddProductTypeAsync(ProductType productType);
+        Task<IReadOnlyList<ProductType>> GetProductTypesAsync();
+        Task<ProductType> GetProductTypeAsync(int id);
+        Task<ProductType> DeleteProductTypeAsync(ProductType productType);
+        Task<int> UpdateProductTypeAsync(ProductType productType);
     }
 }

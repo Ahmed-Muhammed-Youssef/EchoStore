@@ -23,8 +23,18 @@ namespace Infrastructure.Data.Configurations
                 .HasColumnType("decimal(18,2)");
             
             builder.OwnsOne(O => O.ShipToAddress, a => { a.WithOwner(); });
-            builder.HasMany(o => o.OrderItems)
-                .WithOne()
+            
+            // Relationships
+            // OrderedProductInfo
+            builder.HasMany(o => o.OrderedProductInfo)
+                .WithOne(opi => opi.Order)
+                .HasForeignKey(opi => opi.OrderId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            // Delivery Method
+            builder.HasOne(o => o.DeliveryMethod)
+                .WithMany()
+                .HasForeignKey(o => o.DeliveryMethodId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         }
