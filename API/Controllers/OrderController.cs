@@ -32,10 +32,10 @@ namespace API.Controllers
         }
 
         // GET api/<OrderController>/5
-        [HttpGet("{cartId}")]
-        public async Task<ActionResult<Order>> Get(string cartId)
+        [HttpGet("{orderId}")]
+        public async Task<ActionResult<Order>> Get(int orderId)
         {
-            var order = await _orderService.GetOrderByIdAsync(cartId, HttpContext.User.RetrieveEmailFromPrincipal());
+            var order = await _orderService.GetOrderByIdAsync(orderId, HttpContext.User.RetrieveEmailFromPrincipal());
             return Ok(order);
         }
 
