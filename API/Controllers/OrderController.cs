@@ -25,18 +25,18 @@ namespace API.Controllers
         }
         // GET: api/<OrderController>
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Order>>> Get()
+        public async Task<ActionResult<IReadOnlyList<OrderToReturnDto>>> Get()
         {
             var orders = await _orderService.GetOrdersForUserAsync(HttpContext.User.RetrieveEmailFromPrincipal());
-            return Ok(orders);
+            return Ok(_mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders));
         }
 
         // GET api/<OrderController>/5
-        [HttpGet("{cartId}")]
-        public async Task<ActionResult<Order>> Get(string cartId)
+        [HttpGet("{orderId}")]
+        public async Task<ActionResult<OrderToReturnDto>> Get(int orderId)
         {
-            var order = await _orderService.GetOrderByIdAsync(cartId, HttpContext.User.RetrieveEmailFromPrincipal());
-            return Ok(order);
+            var order = await _orderService.GetOrderByIdAsync(orderId, HttpContext.User.RetrieveEmailFromPrincipal());
+            return Ok(_mapper.Map<Order, OrderToReturnDto>(order));
         }
 
         // POST api/<OrderController>
@@ -51,6 +51,14 @@ namespace API.Controllers
                 return BadRequest("Order creation failed");
             }
             return CreatedAtAction(nameof(Get), new {order.Id}, order);
+        }
+
+        // GET: api/<OrderController>/deliveryMethods
+        [HttpGet("deliveryMethods")]
+        public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
+        {
+            var dms = await _orderService.GetDeliveryMethodsAsync();
+            return Ok(dms);
         }
         // @ToDo: Cancel Order endpoint
         // DELETE api/<OrderController>/5

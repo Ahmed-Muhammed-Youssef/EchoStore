@@ -17,6 +17,13 @@ namespace API.Helpers
             CreateMap<CartDto, Cart>();
             CreateMap<CartItemDto, CartItem>();
             CreateMap<AddressDto, Core.Entities.OrderAggregate.Address>();
+            CreateMap<Core.Entities.OrderAggregate.Order, OrderToReturnDto>()
+                .ForMember(otr => otr.DeliveryMethod, c => c.MapFrom(s => s.DeliveryMethod.ShortName))
+                .ForMember(otr => otr.ShippingPrice, c => c.MapFrom(s => s.DeliveryMethod.Price));
+            CreateMap<Core.Entities.OrderAggregate.OrderedProductInfo, OrderedProductInfoDto>()
+                .ForMember(opi => opi.Name, c => c.MapFrom(s => s.ProductInfo.Name))
+                .ForMember(opi => opi.Price, c => c.MapFrom(s => s.ProductInfo.Price))
+                .ForMember(opi => opi.PictureUrl, c => c.MapFrom<OrderUrlResolver>());
 
         }
     }

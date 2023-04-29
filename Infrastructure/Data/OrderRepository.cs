@@ -16,6 +16,7 @@ namespace Infrastructure.Data
         {
             _storeContext = storeContext;
         }
+
         public async Task<Order> CreateOrderAsync(Order order)
         {
             await _storeContext.Orders.AddAsync(order);
@@ -27,6 +28,7 @@ namespace Infrastructure.Data
             }
             return order;
         }
+
         private async Task<OrderedProductInfo> OrderProduct(Order order, OrderedProductInfo orderedProductInfo)
         {
             if (orderedProductInfo.ProductInfo.AvailableAmount < orderedProductInfo.Quantity)
@@ -37,6 +39,7 @@ namespace Infrastructure.Data
             await _storeContext.OrderedProductInfo.AddAsync(orderedProductInfo);
             return orderedProductInfo;
         }
+
         public void DeleteOrder(Order order)
         {
             var r =  _storeContext.Orders.Remove(order);
@@ -47,15 +50,20 @@ namespace Infrastructure.Data
             return await _storeContext.Orders
                 .AsNoTracking()
                 .Where(o => o.BuyerEmail == userEmail)
+                .Include(o => o.OrderedProductInfo)
+                .Include(o => o.DeliveryMethod)
+                .OrderByDescending(o => o.OrderDate)
                 .ToListAsync();
         }
-
-      
 
         public async Task<Order> GetOrderAsync(int orderId)
         {
             return await _storeContext.Orders
-                .FindAsync(orderId);
+                .AsNoTracking()
+                .Include(o => o.OrderedProductInfo)
+                .Include(o => o.DeliveryMethod)
+                .Where(o => o.Id == orderId)
+                .FirstOrDefaultAsync();
         }
 
         public void UpdateOrder(Order order)

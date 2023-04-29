@@ -10,9 +10,6 @@ namespace Infrastructure.Services
     {
         private readonly IUnitOfWork _unitOfWork;
        
-       
-
-
         public OrderService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -21,7 +18,7 @@ namespace Infrastructure.Services
         {
             var cart = await _unitOfWork.CartRepository.GetCart(cartId);
             var dm = await _unitOfWork.DeliveryMethodRepository.GetByIdAsync(deliveryMethodId);
-            decimal subtotal = dm.Price;
+            decimal subtotal = 0;
             if(dm == null)
             {
                 throw new Exception("404: Delivery method not found");
@@ -57,19 +54,25 @@ namespace Infrastructure.Services
             return order;
         }
 
-        public Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
+        public async Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.DeliveryMethodRepository.GetAllAsync();
         }
 
-        public Task<Order> GetOrderByIdAsync(string cartId, string buyerEmail)
+        public async Task<Order> GetOrderByIdAsync(int id, string buyerEmail)
         {
-            throw new NotImplementedException();
+            var order = await _unitOfWork.OrderRepository.GetOrderAsync(id);
+            if(order.BuyerEmail == buyerEmail)
+            {
+                return order;
+            }
+            return null;
         }
 
-        public Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
+        public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
         {
-            throw new NotImplementedException();
+            var orders = await _unitOfWork.OrderRepository.GetCurrentUserOrdersAsync(buyerEmail);
+            return orders;
         }
     }
 }
