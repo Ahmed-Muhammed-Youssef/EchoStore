@@ -52,6 +52,14 @@ namespace API.Controllers
             }
             return CreatedAtAction(nameof(Get), new {order.Id}, order);
         }
+
+        // GET: api/<OrderController>/deliveryMethods
+        [HttpGet("deliveryMethods")]
+        public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
+        {
+            var dms = await _orderService.GetDeliveryMethodsAsync();
+            return Ok(dms);
+        }
         // @ToDo: Cancel Order endpoint
         // DELETE api/<OrderController>/5
        /* [HttpDelete("{id}")]
