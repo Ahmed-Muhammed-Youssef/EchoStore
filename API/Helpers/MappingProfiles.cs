@@ -23,7 +23,7 @@ namespace API.Helpers
             CreateMap<Core.Entities.OrderAggregate.OrderedProductInfo, OrderedProductInfoDto>()
                 .ForMember(opi => opi.Name, c => c.MapFrom(s => s.ProductInfo.Name))
                 .ForMember(opi => opi.Price, c => c.MapFrom(s => s.ProductInfo.Price))
-                .ForMember(opi => opi.PictureUrl, c => c.MapFrom(s => s.ProductInfo.PictureUrl));
+                .ForMember(opi => opi.PictureUrl, c => c.MapFrom<OrderUrlResolver>());
 
         }
     }
