@@ -25,18 +25,18 @@ namespace API.Controllers
         }
         // GET: api/<OrderController>
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Order>>> Get()
+        public async Task<ActionResult<IReadOnlyList<OrderToReturnDto>>> Get()
         {
             var orders = await _orderService.GetOrdersForUserAsync(HttpContext.User.RetrieveEmailFromPrincipal());
-            return Ok(orders);
+            return Ok(_mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders));
         }
 
         // GET api/<OrderController>/5
         [HttpGet("{orderId}")]
-        public async Task<ActionResult<Order>> Get(int orderId)
+        public async Task<ActionResult<OrderToReturnDto>> Get(int orderId)
         {
             var order = await _orderService.GetOrderByIdAsync(orderId, HttpContext.User.RetrieveEmailFromPrincipal());
-            return Ok(order);
+            return Ok(_mapper.Map<Order, OrderToReturnDto>(order));
         }
 
         // POST api/<OrderController>

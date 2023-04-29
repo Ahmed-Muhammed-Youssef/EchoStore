@@ -18,7 +18,7 @@ namespace Infrastructure.Services
         {
             var cart = await _unitOfWork.CartRepository.GetCart(cartId);
             var dm = await _unitOfWork.DeliveryMethodRepository.GetByIdAsync(deliveryMethodId);
-            decimal subtotal = dm.Price;
+            decimal subtotal = 0;
             if(dm == null)
             {
                 throw new Exception("404: Delivery method not found");
