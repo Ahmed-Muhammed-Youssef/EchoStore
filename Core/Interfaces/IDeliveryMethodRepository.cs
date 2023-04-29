@@ -14,7 +14,7 @@ namespace Core.Interfaces
         public Task<IReadOnlyList<DeliveryMethod>> GetAllAsync();
 
         // DELETE
-        public Task<DeliveryMethod> RemoveAsync(int deliveryMethodId);
+        public void RemoveAsync(DeliveryMethod deliveryMethod);
 
     }
 }
