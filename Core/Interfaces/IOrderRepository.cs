@@ -10,7 +10,7 @@ namespace Core.Interfaces
         public Task<IReadOnlyList<Order>> GetCurrentUserOrdersAsync (string userEmail);
         public Task<Order> GetOrderAsync (int orderId);
         public Task<Order> CreateOrderAsync(Order order);
-        public Task<Order> UpdateOrderAsync(Order order);
-        public Task<Order> DeleteOrderAsync(Order order);
+        public void UpdateOrder(Order order);
+        public void DeleteOrder(Order order);
     }
 }

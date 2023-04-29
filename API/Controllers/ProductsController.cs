@@ -15,11 +15,11 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private readonly IProductRepository _productRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper mapper;
-        public ProductsController(IProductRepository productRepository, IMapper mapper)
+        public ProductsController(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _productRepository = productRepository;
+            _unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
         // GET: api/products
@@ -51,7 +51,7 @@ namespace API.Controllers
                 default:
                     break;
             }
-            var products = _productRepository.GetProductsInfo(
+            var products = _unitOfWork.ProductRepository.GetProductsInfo(
                 filter: filter,
                 orderBy: orderBy,
                 paginationInfo: ref pInfo
@@ -66,7 +66,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductInfoDto>> GetProductInfo(int id)
         {
-            var product = await _productRepository.GetProductInfoByIdAsync(id);
+            var product = await _unitOfWork.ProductRepository.GetProductInfoByIdAsync(id);
             if (product == null) {
                 return NotFound();
             }
@@ -76,13 +76,18 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProductInfo(int id)
         {
-            var product = await _productRepository.GetProductInfoByIdAsync(id);
+            var product = await _unitOfWork.ProductRepository.GetProductInfoByIdAsync(id);
 
             if (product == null)
             {
                 return NotFound();
             }
-            await _productRepository.DeleteProductInfoAsync(product);
+            _unitOfWork.ProductRepository.DeleteProductInfo(product);
+            var res = await _unitOfWork.Complete();
+            if(res <= 0)
+            {
+                throw new Exception("Transaction error");
+            }
             return NoContent();
         }
         // POST: api/products
@@ -93,7 +98,12 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid data");
             }
-            product = await _productRepository.AddProductInfoAsync(product);
+            product = await _unitOfWork.ProductRepository.AddProductInfoAsync(product);
+            var res = await _unitOfWork.Complete();
+            if (res <= 0)
+            {
+                throw new Exception("Transaction error");
+            }
             return Ok(product);
         }
         // PUT: api/products
@@ -104,11 +114,16 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid data");
             }
-            if (await _productRepository.GetProductInfoByIdAsync(product.Id) == null)
+            if (await _unitOfWork.ProductRepository.GetProductInfoByIdAsync(product.Id) == null)
             {
                 return NotFound();
             }
-            await _productRepository.UpdateProductInfoAsync(product);
+            _unitOfWork.ProductRepository.UpdateProductInfo(product);
+            var res = await _unitOfWork.Complete();
+            if (res <= 0)
+            {
+                throw new Exception("Transaction error");
+            }
             return Ok(product);
         }
 
@@ -119,14 +134,14 @@ namespace API.Controllers
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
         {
-            var brands = await _productRepository.GetBrandsAsync();
+            var brands = await _unitOfWork.ProductRepository.GetBrandsAsync();
             return Ok(brands);
         }
         // GET: api/products/brands/5
         [HttpGet("brands/{id}")]
         public async Task<ActionResult<ProductBrand>> GetProductBrand(int id)
         {
-            var productBrand = await _productRepository.GetBrandAsync(id);
+            var productBrand = await _unitOfWork.ProductRepository.GetBrandAsync(id);
 
             if (productBrand == null)
             {
@@ -139,13 +154,18 @@ namespace API.Controllers
         [HttpDelete("brands/{id}")]
         public async Task<ActionResult> DeleteProductBrand(int id)
         {
-            var brand = await _productRepository.GetBrandAsync(id);
+            var brand = await _unitOfWork.ProductRepository.GetBrandAsync(id);
 
             if (brand == null)
             {
                 return NotFound();
             }
-            await _productRepository.DeleteBrandAsync(brand);
+            _unitOfWork.ProductRepository.DeleteBrand(brand);
+            var res = await _unitOfWork.Complete();
+            if (res <= 0)
+            {
+                throw new Exception("Transaction error");
+            }
             return NoContent();
         }
         // POST: api/products/brands
@@ -156,7 +176,12 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid data");
             }
-            var brand = await _productRepository.AddProductBrandAsync(newProductBrand);
+            var brand = await _unitOfWork.ProductRepository.AddProductBrandAsync(newProductBrand);
+            var res = await _unitOfWork.Complete();
+            if (res <= 0)
+            {
+                throw new Exception("Transaction error");
+            }
             return Ok(brand);
         }
         // PUT: api/products/brands
@@ -168,11 +193,16 @@ namespace API.Controllers
                 return BadRequest("Invalid data");
             }
 
-            if (await _productRepository.GetBrandAsync(brand.Id) == null)
+            if (await _unitOfWork.ProductRepository.GetBrandAsync(brand.Id) == null)
             {
                 return NotFound();
             }
-            await _productRepository.UpdateBrandAsync(brand);
+            _unitOfWork.ProductRepository.UpdateBrand(brand);
+            var res = await _unitOfWork.Complete();
+            if (res <= 0)
+            {
+                throw new Exception("Transaction error");
+            }
             return Ok(brand);
         }
 
@@ -183,14 +213,14 @@ namespace API.Controllers
         [HttpGet("types")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductTypes()
         {
-            var types = await _productRepository.GetProductTypesAsync();
+            var types = await _unitOfWork.ProductRepository.GetProductTypesAsync();
             return Ok(types);
         }
         // GET: api/products/types/5
         [HttpGet("types/{id}")]
         public async Task<ActionResult<ProductBrand>> GetProductType(int id)
         {
-            var productType = await _productRepository.GetProductTypeAsync(id);
+            var productType = await _unitOfWork.ProductRepository.GetProductTypeAsync(id);
 
             if (productType == null)
             {
@@ -203,13 +233,18 @@ namespace API.Controllers
         [HttpDelete("types/{id}")]
         public async Task<ActionResult> DeleteProductType(int id)
         {
-            var type = await _productRepository.GetProductTypeAsync(id);
+            var type = await _unitOfWork.ProductRepository.GetProductTypeAsync(id);
 
             if (type == null)
             {
                 return NotFound();
             }
-            await _productRepository.DeleteProductTypeAsync(type);
+            _unitOfWork.ProductRepository.DeleteProductType(type);
+            var res = await _unitOfWork.Complete();
+            if (res <= 0)
+            {
+                throw new Exception("Transaction error");
+            }
             return NoContent();
         }
         // POST: api/products/types
@@ -220,7 +255,12 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid data");
             }
-            type = await _productRepository.AddProductTypeAsync(type);
+            type = await _unitOfWork.ProductRepository.AddProductTypeAsync(type);
+            var res = await _unitOfWork.Complete();
+            if (res <= 0)
+            {
+                throw new Exception("Transaction error");
+            }
             return Ok(type);
         }
         // PUT: api/products/types
@@ -232,11 +272,16 @@ namespace API.Controllers
                 return BadRequest("Invalid data");
             }
 
-            if (await _productRepository.GetProductTypeAsync(type.Id) == null)
+            if (await _unitOfWork.ProductRepository.GetProductTypeAsync(type.Id) == null)
             {
                 return NotFound();
             }
-           await _productRepository.UpdateProductTypeAsync(type);
+            _unitOfWork.ProductRepository.UpdateProductType(type);
+            var res = await _unitOfWork.Complete();
+            if (res <= 0)
+            {
+                throw new Exception("Transaction error");
+            }
             return Ok(type);
         }
     }

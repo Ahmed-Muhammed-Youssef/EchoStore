@@ -16,19 +16,19 @@ namespace API.Controllers
     [ApiController]
     public class CartController : ControllerBase
     {
-        private readonly ICartRepository _cartRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public CartController(ICartRepository cartRepository, IMapper mapper)
+        public CartController(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            this._cartRepository = cartRepository;
+           _unitOfWork = unitOfWork;
             this._mapper = mapper;
         }
         // GET: api/Cart/string
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cart>>> GetCart([FromQuery(Name ="id")]string id)
         {
-            var cart = await _cartRepository.GetCart(id);
+            var cart = await _unitOfWork.CartRepository.GetCart(id);
             if(cart == null)
             {
                 return NotFound("The cart is not found.");
@@ -41,7 +41,7 @@ namespace API.Controllers
         public async Task<IActionResult> Create([FromBody] CartDto cartDto)
         {
             var cart = _mapper.Map<CartDto, Cart>(cartDto);
-            if(await _cartRepository.CreateUpdateCart(cart))
+            if(await _unitOfWork.CartRepository.CreateUpdateCart(cart))
             {
                 return CreatedAtAction("Create", new { id = cart.Id }, cart);
             }
@@ -57,11 +57,11 @@ namespace API.Controllers
             {
                 return BadRequest();
             }
-            if(await _cartRepository.GetCart(id) == null)
+            if(await _unitOfWork.CartRepository.GetCart(id) == null)
             {
                 return NotFound("The cart is not found.");
             }
-            if (await _cartRepository.CreateUpdateCart(cart))
+            if (await _unitOfWork.CartRepository.CreateUpdateCart(cart))
             {
                 return CreatedAtAction("Create", new { id = cart.Id }, cart);
             }
@@ -72,12 +72,12 @@ namespace API.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery]string id)
         {
-            var cart = await _cartRepository.GetCart(id);
+            var cart = await _unitOfWork.CartRepository.GetCart(id);
             if(cart == null)
             {
                 return NotFound("The cart is not found.");
             }
-            if(await _cartRepository.DeleteCart(cart))
+            if(await _unitOfWork.CartRepository.DeleteCart(cart))
             {
                 return NoContent();
             }

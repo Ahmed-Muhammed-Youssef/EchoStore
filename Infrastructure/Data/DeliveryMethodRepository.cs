@@ -36,16 +36,14 @@ namespace Infrastructure.Data
         }
 
 
-        public async Task<DeliveryMethod> RemoveAsync(int deliveryMethodId)
+        public void RemoveAsync(DeliveryMethod deliveryMethod)
         {
-            var dm = await GetByIdAsync(deliveryMethodId);
-            if (dm == null)
+            if (deliveryMethod is null)
             {
-                throw new Exception("Not Found");
+                throw new ArgumentNullException(nameof(deliveryMethod));
             }
-            var res = _storeContext.DeliveryMethods.Remove(dm);
-            _storeContext.SaveChanges();
-            return res.Entity;
+
+            var res = _storeContext.DeliveryMethods.Remove(deliveryMethod);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Core.Entities;
-using Core.Entities.OrderAggregate;
+﻿using Core.Entities.OrderAggregate;
 using Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -38,11 +37,9 @@ namespace Infrastructure.Data
             await _storeContext.OrderedProductInfo.AddAsync(orderedProductInfo);
             return orderedProductInfo;
         }
-        public async Task<Order> DeleteOrderAsync(Order order)
+        public void DeleteOrder(Order order)
         {
             var r =  _storeContext.Orders.Remove(order);
-            await SaveChangesAsync();
-            return r.Entity;
         }
 
         public async Task<IReadOnlyList<Order>> GetCurrentUserOrdersAsync(string userEmail)
@@ -61,24 +58,9 @@ namespace Infrastructure.Data
                 .FindAsync(orderId);
         }
 
-        public async Task<Order> UpdateOrderAsync(Order order)
+        public void UpdateOrder(Order order)
         {
-            var r = _storeContext.Orders.Update(order);
-            await SaveChangesAsync();
-            return r.Entity;
-        }
-        private async Task<int> SaveChangesAsync()
-        {
-            int changes = 0;
-            try
-            {
-                changes = await _storeContext.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-            return changes;
+            var r = _storeContext.Entry(order).State = EntityState.Modified; ;
         }
     }
 }

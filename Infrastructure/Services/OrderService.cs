@@ -8,31 +8,28 @@ namespace Infrastructure.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly ICartRepository _cartRepository;
-        private readonly IProductRepository _productRepository;
-        private readonly IOrderRepository _orderRepository;
-        private readonly IDeliveryMethodRepository _deliveryMethodRepository;
+        private readonly IUnitOfWork _unitOfWork;
+       
+       
 
-        public OrderService(ICartRepository cartRepository, IProductRepository productRepository, IOrderRepository orderRepository, IDeliveryMethodRepository deliveryMethodRepository)
+
+        public OrderService(IUnitOfWork unitOfWork)
         {
-            _cartRepository = cartRepository;
-            _productRepository = productRepository;
-            _orderRepository = orderRepository;
-            _deliveryMethodRepository = deliveryMethodRepository;
+            _unitOfWork = unitOfWork;
         }
         public async Task<Order> CreateOrderAsync(string buyerEmail, int deliveryMethodId, string cartId, Address shippingAddress)
         {
-            var cart = await _cartRepository.GetCart(cartId);
-            var dm = await _deliveryMethodRepository.GetByIdAsync(deliveryMethodId);
+            var cart = await _unitOfWork.CartRepository.GetCart(cartId);
+            var dm = await _unitOfWork.DeliveryMethodRepository.GetByIdAsync(deliveryMethodId);
+            decimal subtotal = dm.Price;
             if(dm == null)
             {
                 throw new Exception("404: Delivery method not found");
             }
             var items = new List<OrderedProductInfo>();
-            decimal subtotal = 0;
             foreach (var item in cart.Items)
             {
-                var productItemInfo = await _productRepository.GetProductInfoByIdAsync(item.Id);
+                var productItemInfo = await _unitOfWork.ProductRepository.GetProductInfoByIdAsync(item.Id);
                 // check the quantity availability
                 if (item.Quantity > productItemInfo.AvailableAmount)
                 {
@@ -47,7 +44,17 @@ namespace Infrastructure.Services
             var order = new Order(buyerEmail, shippingAddress, dm, items, subtotal);
 
             // Save to db
-            return await _orderRepository.CreateOrderAsync(order);
+            order = await _unitOfWork.OrderRepository.CreateOrderAsync(order);
+            int result = 0;
+            if (_unitOfWork.HasChanges())
+            {
+                result = await _unitOfWork.Complete();
+            }
+            if(result <= 0)
+            {
+                return null;
+            }
+            return order;
         }
 
         public Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
