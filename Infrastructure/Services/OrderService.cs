@@ -21,12 +21,12 @@ namespace Infrastructure.Services
         {
             var cart = await _unitOfWork.CartRepository.GetCart(cartId);
             var dm = await _unitOfWork.DeliveryMethodRepository.GetByIdAsync(deliveryMethodId);
+            decimal subtotal = dm.Price;
             if(dm == null)
             {
                 throw new Exception("404: Delivery method not found");
             }
             var items = new List<OrderedProductInfo>();
-            decimal subtotal = 0;
             foreach (var item in cart.Items)
             {
                 var productItemInfo = await _unitOfWork.ProductRepository.GetProductInfoByIdAsync(item.Id);
