@@ -82,7 +82,7 @@ namespace API.Controllers
             {
                 return NotFound();
             }
-            await _productRepository.DeleteProductInfoAsync(product);
+            _productRepository.DeleteProductInfo(product);
             return NoContent();
         }
         // POST: api/products
@@ -108,7 +108,7 @@ namespace API.Controllers
             {
                 return NotFound();
             }
-            await _productRepository.UpdateProductInfoAsync(product);
+            _productRepository.UpdateProductInfo(product);
             return Ok(product);
         }
 
@@ -145,7 +145,7 @@ namespace API.Controllers
             {
                 return NotFound();
             }
-            await _productRepository.DeleteBrandAsync(brand);
+            _productRepository.DeleteBrand(brand);
             return NoContent();
         }
         // POST: api/products/brands
@@ -172,7 +172,7 @@ namespace API.Controllers
             {
                 return NotFound();
             }
-            await _productRepository.UpdateBrandAsync(brand);
+            _productRepository.UpdateBrand(brand);
             return Ok(brand);
         }
 
@@ -209,7 +209,7 @@ namespace API.Controllers
             {
                 return NotFound();
             }
-            await _productRepository.DeleteProductTypeAsync(type);
+            _productRepository.DeleteProductType(type);
             return NoContent();
         }
         // POST: api/products/types
@@ -236,7 +236,7 @@ namespace API.Controllers
             {
                 return NotFound();
             }
-           await _productRepository.UpdateProductTypeAsync(type);
+           _productRepository.UpdateProductType(type);
             return Ok(type);
         }
     }

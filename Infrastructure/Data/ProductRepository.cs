@@ -22,15 +22,22 @@ namespace Infrastructure.Data
         {
             var d = await _storeContext.Products.AddAsync(product);
             var pi = await _storeContext.Products.Where(p => p.Id == d.Entity.Id).Select(p => p.ProductInfo).FirstOrDefaultAsync();
-            await IncrementProductInfoAmountAndSaveChanges(pi);
+            IncrementProductInfoAmount(pi);
             return d.Entity;
         }
-        public async Task<Product> RemoveProductAsync(Product product)
+        public void RemoveProduct(Product product)
         {
+            if (product is null)
+            {
+                throw new ArgumentNullException(nameof(product));
+            }
+            if (product.ProductInfo is null)
+            {
+                throw new ArgumentNullException(nameof(product.ProductInfo));
+            }
+
             var d = _storeContext.Products.Remove(product);
-            var pi = await _storeContext.Products.Where(p => p.Id == d.Entity.Id).Select(p => p.ProductInfo).FirstOrDefaultAsync();
-            await DecrementProductInfoAmountAndSaveChanges(pi);
-            return d.Entity;
+            DecrementProductInfoAmount(product.ProductInfo);
         }
         public async Task<IReadOnlyList<Product>> GetProductsByProductInfoIdAsync(int productInfoId, int quantity)
         {
@@ -42,13 +49,11 @@ namespace Infrastructure.Data
         public async Task<ProductInfo> AddProductInfoAsync(ProductInfo productInfo)
         {
             var d = await _storeContext.ProductInfo.AddAsync(productInfo);
-            await SaveChangesAsync();
             return d.Entity;
         }
         public async Task<ProductBrand> AddProductBrandAsync(ProductBrand productBrand)
         {
             var d = await _storeContext.ProductBrands.AddAsync(productBrand);
-            await SaveChangesAsync();
             return d.Entity;
         }
         public async Task<int> GetProductsCountPerProductInfoAsync(int productInfoId)
@@ -60,32 +65,23 @@ namespace Infrastructure.Data
         public async Task<ProductType> AddProductTypeAsync(ProductType productType)
         {
             var d = await _storeContext.ProductTypes.AddAsync(productType);
-            await SaveChangesAsync();
             return d.Entity;
         }
-        public async Task<ProductBrand> DeleteBrandAsync(ProductBrand productBrand)
+        public void DeleteBrand(ProductBrand productBrand)
         {
             var d = _storeContext.ProductBrands.Remove(productBrand);
-            await SaveChangesAsync();
-            return d.Entity;
         }
-        public async Task<ProductInfo> DeleteProductInfoAsync(ProductInfo productInfo)
+        public void DeleteProductInfo(ProductInfo productInfo)
         {
             var d = _storeContext.ProductInfo.Remove(productInfo);
-            await SaveChangesAsync();
-            return d.Entity;
         }
-        public async Task<Product> DeleteProductAsync(Product product)
+        public void DeleteProduct(Product product)
         {
             var d = _storeContext.Products.Remove(product);
-            await SaveChangesAsync();
-            return d.Entity;
         }
-        public async Task<ProductType> DeleteProductTypeAsync(ProductType productType)
+        public void DeleteProductType(ProductType productType)
         {
             var d = _storeContext.ProductTypes.Remove(productType);
-            await SaveChangesAsync();
-            return d.Entity;
         }
         public async Task<ProductBrand> GetBrandAsync(int id) => await _storeContext.ProductBrands
             .AsNoTracking()
@@ -127,44 +123,39 @@ namespace Infrastructure.Data
         public async Task<IReadOnlyList<ProductType>> GetProductTypesAsync() => await _storeContext.ProductTypes
             .AsNoTracking()
             .ToListAsync();
-        public async Task<int> UpdateBrandAsync(ProductBrand productBrand)
+        public void UpdateBrand(ProductBrand productBrand)
         {
+            if (productBrand is null)
+            {
+                throw new ArgumentNullException(nameof(productBrand));
+            }
+
             _storeContext.Entry(productBrand).State = EntityState.Modified;
-            return await SaveChangesAsync();
         }
-        public async Task<int> UpdateProductInfoAsync(ProductInfo product)
+        public void UpdateProductInfo(ProductInfo product)
         {
+            if (product is null)
+            {
+                throw new ArgumentNullException(nameof(product));
+            }
+
             _storeContext.Entry(product).State = EntityState.Modified;
-            return await SaveChangesAsync();
         }
-        public async Task<int> UpdateProductTypeAsync(ProductType productType)
+        public void UpdateProductType(ProductType productType)
         {
             _storeContext.Entry(productType).State = EntityState.Modified;
-            return await SaveChangesAsync();
         }
-        private async Task<int> SaveChangesAsync()
-        {
-            int changes = 0;
-            try
-            {
-                changes = await _storeContext.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-            return changes;
-        }
+        
         // Utitlity
-        private async Task IncrementProductInfoAmountAndSaveChanges(ProductInfo productInfoId)
+        private void IncrementProductInfoAmount(ProductInfo productInfoId)
         {
             productInfoId.AvailableAmount++;
-            await this.UpdateProductInfoAsync(productInfoId);
+            UpdateProductInfo(productInfoId);
         }
-        private async Task DecrementProductInfoAmountAndSaveChanges(ProductInfo productInfoId)
+        private void DecrementProductInfoAmount(ProductInfo productInfoId)
         {
             if (productInfoId.AvailableAmount > 1) { productInfoId.AvailableAmount--; }
-            await this.UpdateProductInfoAsync(productInfoId);
+            UpdateProductInfo(productInfoId);
         }
 
     }
