@@ -58,6 +58,7 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(config => {
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService, PaymantService>();
+builder.Services.AddSingleton<IResponseCacheService, ResponseCacheService>();
 
 // third-party libraries
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
