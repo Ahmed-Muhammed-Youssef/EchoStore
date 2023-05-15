@@ -23,26 +23,10 @@ namespace Infrastructure.Data
             modelBuilder.ApplyConfiguration(new OrderConfigurations());
             modelBuilder.ApplyConfiguration(new OrderItemConfigurations());
             modelBuilder.ApplyConfiguration(new DeliveryMethodConfigurations());
-
-            // Deleting a brand or a product type cause the profram to delete
-            // All products of this brand/ type
-            // This is done to pervent products with null brand/type
-
-            // @to do: seperate all the entities configurations into different folders.
-            modelBuilder.Entity<ProductInfo>()
-                .HasOne(p => p.ProductBrand)
-                .WithMany()
-                .HasForeignKey(p => p.ProductBrandId)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<ProductInfo>()
-                .HasOne(p => p.ProductType)
-                .WithMany()
-                .HasForeignKey(p => p.ProductTypeId);
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.ProductInfo)
-                .WithMany()
-                .HasForeignKey(p => p.ProductInfoId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.ApplyConfiguration(new ProductConfigurations());
+            modelBuilder.ApplyConfiguration(new ProductInfoConfigurations());
+            modelBuilder.ApplyConfiguration(new ProductBrandConfigurations());
+            modelBuilder.ApplyConfiguration(new ProductTypeConfigurations());
         }
     }
 }
