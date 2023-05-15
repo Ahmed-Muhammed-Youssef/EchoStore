@@ -1,4 +1,5 @@
 using API.DTOs;
+using API.Helpers;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -23,6 +24,7 @@ namespace API.Controllers
             this.mapper = mapper;
         }
         // GET: api/products
+        [Cached(1000)]
         [HttpGet]
         public ActionResult<List<ProductInfoDto>> GetProductsInfo(string sortBy, int? brandId, int? typeId,
             string search = "", [FromHeader] int pageNumber = 0, [FromHeader] int pageSize = 4)
@@ -63,6 +65,7 @@ namespace API.Controllers
             return Ok(products.Select(p => mapper.Map<ProductInfo, ProductInfoDto>(p)));
         }
         // GET: api/products/5
+        [Cached(1000)]
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductInfoDto>> GetProductInfo(int id)
         {
@@ -131,6 +134,7 @@ namespace API.Controllers
         ///  Crud APIs for brands
         /// </summary>
         // GET: api/products/brands
+        [Cached(1000)]
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
         {
@@ -138,6 +142,7 @@ namespace API.Controllers
             return Ok(brands);
         }
         // GET: api/products/brands/5
+        [Cached(1000)]
         [HttpGet("brands/{id}")]
         public async Task<ActionResult<ProductBrand>> GetProductBrand(int id)
         {
@@ -211,6 +216,7 @@ namespace API.Controllers
         /// </summary>
         // GET: api/products/types
         [HttpGet("types")]
+        [Cached(1000)]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductTypes()
         {
             var types = await _unitOfWork.ProductRepository.GetProductTypesAsync();
@@ -218,6 +224,7 @@ namespace API.Controllers
         }
         // GET: api/products/types/5
         [HttpGet("types/{id}")]
+        [Cached(1000)]
         public async Task<ActionResult<ProductBrand>> GetProductType(int id)
         {
             var productType = await _unitOfWork.ProductRepository.GetProductTypeAsync(id);
