@@ -1,14 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Core.Entities
+﻿namespace Core.Entities
 {
     public class Product
     {
-        [Key]
+        // PK
         public int Id { get; set; }
-        [Required]
+
+        // FKs
         public int ProductInfoId { get; set; }
-        [Required]
+
+        // Navigation Properties
         public ProductInfo ProductInfo { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace Infrastructure.Identity
                     UserName = "klod",
                     Address = new Address {FirstName="klod", LastName="mo", Street="12 tele", City="benha", State="QY", Zipcode="19121" }
                 };
-                await userManager.CreateAsync(user, "Pa$$w0rd");
+                await userManager.CreateAsync(user, "P@$$w0rd");
             }
         }
     }

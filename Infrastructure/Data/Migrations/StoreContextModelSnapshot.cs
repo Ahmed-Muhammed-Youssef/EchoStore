@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Infrastructure.Data.Migrations
+#nullable disable
+
+namespace DataMigrations
 {
     [DbContext(typeof(StoreContext))]
     partial class StoreContextModelSnapshot : ModelSnapshot
@@ -13,8 +15,7 @@ namespace Infrastructure.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.17");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.16");
 
             modelBuilder.Entity("Core.Entities.OrderAggregate.DeliveryMethod", b =>
                 {
@@ -50,6 +51,9 @@ namespace Infrastructure.Data.Migrations
 
                     b.Property<string>("BuyerEmail")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClientSecret")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("DeliveryMethodId")
@@ -108,14 +112,9 @@ namespace Infrastructure.Data.Migrations
                     b.Property<int>("ProductInfoId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ProductInfoId1")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ProductInfoId");
-
-                    b.HasIndex("ProductInfoId1");
 
                     b.ToTable("Products");
                 });
@@ -262,14 +261,10 @@ namespace Infrastructure.Data.Migrations
             modelBuilder.Entity("Core.Entities.Product", b =>
                 {
                     b.HasOne("Core.Entities.ProductInfo", "ProductInfo")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("ProductInfoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Core.Entities.ProductInfo", null)
-                        .WithMany("Products")
-                        .HasForeignKey("ProductInfoId1");
 
                     b.Navigation("ProductInfo");
                 });
