@@ -70,5 +70,10 @@ namespace Infrastructure.Data
         {
             var r = _storeContext.Entry(order).State = EntityState.Modified; ;
         }
+
+        public async Task<Order> GetOrderByPaymentIntent(string paymentIntentId)
+        {
+           return await _storeContext.Orders.FirstOrDefaultAsync(o => o.PaymentIntentId == paymentIntentId);
+        }
     }
 }

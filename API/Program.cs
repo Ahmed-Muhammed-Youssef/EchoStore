@@ -19,11 +19,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // add services to the container
 
+
+// Database Related
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IJwtService, JwtService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddControllers();
-builder.Services.AddAutoMapper(typeof(MappingProfiles));
 builder.Services.AddDbContext<StoreContext>(options =>
 {
     if (builder.Environment.EnvironmentName == "Development")
@@ -38,11 +36,6 @@ builder.Services.AddDbContext<StoreContext>(options =>
     }
 }
 );
-builder.Services.AddSingleton<IConnectionMultiplexer>(config => {
-    var configuration = ConfigurationOptions.Parse(
-        builder.Configuration.GetConnectionString("Redis"), true);
-    return ConnectionMultiplexer.Connect(configuration);
-});
 builder.Services.AddDbContext<AppIdentityDbContext>(options => {
     if (builder.Environment.EnvironmentName == "Development")
     {
@@ -55,6 +48,20 @@ builder.Services.AddDbContext<AppIdentityDbContext>(options => {
         */
     }
 });
+builder.Services.AddSingleton<IConnectionMultiplexer>(config => {
+    var configuration = ConfigurationOptions.Parse(
+        builder.Configuration.GetConnectionString("Redis"), true);
+    return ConnectionMultiplexer.Connect(configuration);
+});
+
+// Services
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IPaymentService, PaymantService>();
+
+// third-party libraries
+builder.Services.AddAutoMapper(typeof(MappingProfiles));
+
 // identity service extension method
 builder.Services.AddIdentityService(builder.Configuration);
 builder.Services.AddCors(options => options.AddPolicy(
@@ -64,6 +71,7 @@ builder.Services.AddCors(options => options.AddPolicy(
          policy.AllowAnyHeader().AllowAnyMethod().WithOrigins(builder.Configuration.GetValue<string>("AngularUrl"));
      }
     ));
+// Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
@@ -87,6 +95,8 @@ builder.Services.AddSwaggerGen(c =>
                 };
     c.AddSecurityRequirement(securityRequirement);
 });
+// Endpoint resolver
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
