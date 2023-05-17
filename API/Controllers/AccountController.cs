@@ -136,5 +136,13 @@ namespace API.Controllers
                 _cookieService.GetPrincipal(user, CookieAuthenticationDefaults.AuthenticationScheme));
             return Ok();
         }
+        // POST: api/account/logout
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<ActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return Ok();
+        }
     }
 }
