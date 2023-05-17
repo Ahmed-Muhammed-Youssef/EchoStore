@@ -1,15 +1,10 @@
 ﻿using Core.Entities.Identity;
 using Infrastructure.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace API.Extensions
 {
@@ -18,23 +13,22 @@ namespace API.Extensions
         public static IServiceCollection AddIdentityService(this IServiceCollection services,
             IConfiguration configuration)
         {
-            var builder = services.AddIdentityCore<AppUser>();
-            builder = new IdentityBuilder(builder.UserType, builder.Services);
-            builder.AddEntityFrameworkStores<AppIdentityDbContext>();
-            builder.AddSignInManager<SignInManager<AppUser>>();
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+            var builder = services.AddIdentityCore<AppUser>(options =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
-                    ValidIssuer = configuration["Jwt:Issuer"],
-                    ValidateIssuer = true,
-                    ValidateAudience = false
-                };
-            });
-
+                options.SignIn.RequireConfirmedAccount = true;
+                options.Password.RequireNonAlphanumeric = false;
+            })
+                .AddEntityFrameworkStores<AppIdentityDbContext>()
+                .AddUserManager<UserManager<AppUser>>();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                options => { 
+                    options.Cookie.Name = "logged-in-cookie";
+                    options.ExpireTimeSpan = TimeSpan.FromDays(6);
+                    options.SlidingExpiration = true;
+                }
+                );
             return services;
         }
     }
