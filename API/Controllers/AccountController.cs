@@ -86,7 +86,7 @@ namespace API.Controllers
         /// </summary>
 
         // PUT: api/account/edit
-        /*[HttpPut("edit")]
+        [HttpPut("edit")]
         [Authorize]
         public async Task<ActionResult<UserDto>> EditCurrentUser(UserDto user)
         {
@@ -96,24 +96,24 @@ namespace API.Controllers
             {
                 return BadRequest();
             }
-            if(signedInUser.Email != user.Email)
+            if (signedInUser.Email != user.Email)
             {
                 return BadRequest();
             }
             // update the app user data
             signedInUser.DisplayName = user.DisplayName;
             // update the app user address
-            signedInUser.DisplayName = user.DisplayName;           
+            signedInUser.DisplayName = user.DisplayName;
             signedInUser.Address = _mapper.Map<AddressDto, Address>(user.Address);
-           
+
             var res = await _userManager.UpdateAsync(signedInUser);
-            
+
             if (!res.Succeeded)
             {
                 return BadRequest();
             }
             return Ok(user);
-        }*/
+        }
         // POST: api/account/login
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody] LoginDto loginDto)
