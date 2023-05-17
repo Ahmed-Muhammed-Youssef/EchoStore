@@ -60,7 +60,7 @@ namespace API.Controllers
             return Ok();
         }
         // GET: api/account
-        /*[HttpGet]
+        [HttpGet]
         [Authorize]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
@@ -79,7 +79,7 @@ namespace API.Controllers
             };
 
             return Ok(userDto);
-        }*/
+        }
 
         /// <summary>
         /// used to edit the current user data (only the address and display name)
