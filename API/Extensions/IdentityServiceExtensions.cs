@@ -19,7 +19,9 @@ namespace API.Extensions
                 options.Password.RequireNonAlphanumeric = false;
             })
                 .AddEntityFrameworkStores<AppIdentityDbContext>()
-                .AddUserManager<UserManager<AppUser>>();
+                .AddUserManager<UserManager<AppUser>>()
+                .AddSignInManager<SignInManager<AppUser>>();
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(
                 CookieAuthenticationDefaults.AuthenticationScheme,
