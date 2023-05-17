@@ -3,6 +3,8 @@ using API.Extensions;
 using AutoMapper;
 using Core.Entities.Identity;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,26 +19,54 @@ namespace API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly ICookieService _cookieService;
+        private readonly IMapper _mapper;
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly IJwtService jwtService;
-        private readonly IMapper mapper;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            IJwtService jwtService, IMapper mapper)
+        public AccountController(UserManager<AppUser> userManager, ICookieService cookieService,
+            IMapper mapper, SignInManager<AppUser> signInManager)
         {
-            this._userManager = userManager;
+            this._cookieService = cookieService;
+            this._mapper = mapper;
             this._signInManager = signInManager;
-            this.jwtService = jwtService;
-            this.mapper = mapper;
+            this._userManager = userManager;
+        }
+        // POST: api/account/register
+        [HttpPost("register")]
+        public async Task<ActionResult> Register([FromBody] RegisterDto registerDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid input.");
+            }
+            var user = await _userManager.FindByEmailAsync(registerDto.Email);
+            if (user != null)
+            {
+                return BadRequest("Used Email");
+            }
+            user = new AppUser()
+            {
+                DisplayName = registerDto.DisplayName,
+                Email = registerDto.Email,
+                UserName = registerDto.UserName
+            };
+            var result = await _userManager.CreateAsync(user, registerDto.Password);
+            if (!result.Succeeded)
+            {
+                return BadRequest();
+            }
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, 
+                _cookieService.GetPrincipal(user, CookieAuthenticationDefaults.AuthenticationScheme));
+            return Ok();
         }
         // GET: api/account
-        [HttpGet]
+        /*[HttpGet]
         [Authorize]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
-            var email = HttpContext.User?.Claims?.FirstOrDefault( c => c.Type == ClaimTypes.Email)?.Value;
+            var email = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
             var user = await _userManager.FindUserWithAddressByEmail(email);
-            if(user == null)
+            if (user == null)
             {
                 return BadRequest();
             }
@@ -45,18 +75,18 @@ namespace API.Controllers
                 DisplayName = user.DisplayName,
                 Email = user.Email,
                 UserName = user.UserName,
-                Address = mapper.Map<Address, AddressDto>(user.Address)
+                Address = _mapper.Map<Address, AddressDto>(user.Address)
             };
 
             return Ok(userDto);
-        }
-        
+        }*/
+
         /// <summary>
         /// used to edit the current user data (only the address and display name)
         /// </summary>
-        
+
         // PUT: api/account/edit
-        [HttpPut("edit")]
+        /*[HttpPut("edit")]
         [Authorize]
         public async Task<ActionResult<UserDto>> EditCurrentUser(UserDto user)
         {
@@ -74,7 +104,7 @@ namespace API.Controllers
             signedInUser.DisplayName = user.DisplayName;
             // update the app user address
             signedInUser.DisplayName = user.DisplayName;           
-            signedInUser.Address = mapper.Map<AddressDto, Address>(user.Address);
+            signedInUser.Address = _mapper.Map<AddressDto, Address>(user.Address);
            
             var res = await _userManager.UpdateAsync(signedInUser);
             
@@ -83,62 +113,28 @@ namespace API.Controllers
                 return BadRequest();
             }
             return Ok(user);
-        }
-        // POST: api/account/register
-        [HttpPost("register")]
-        public async Task<ActionResult<TokenDto>> Register([FromBody] RegisterDto registerDto)
+        }*/
+        // POST: api/account/login
+        /*[HttpPost("login")]
+        public async Task<ActionResult> Login([FromBody] LoginDto loginDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid input.");
             }
-            var user = await _userManager.FindByEmailAsync(registerDto.Email);
-            if(user != null)
-            {
-                return BadRequest("Used Email");
-            }
-            user = new AppUser()
-            {
-                DisplayName = registerDto.DisplayName,
-                Email = registerDto.Email,
-                UserName = registerDto.UserName
-            };
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
-            if (!result.Succeeded)
-            {
-                return BadRequest();
-            }
-            var tokenDto = new TokenDto()
-            {
-                Email = user.Email,
-                Token = jwtService.CreatToken(user)
-            };
-            return Ok(tokenDto);
-        }
-        // POST: api/account/login
-        [HttpPost("login")]
-        public async Task<ActionResult<TokenDto>> Login([FromBody]LoginDto loginDto)
-        {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest("Invalid input.");
-            }
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
-            if(user == null)
+            if (user == null)
             {
                 return Unauthorized(loginDto);
             }
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             {
                 return Unauthorized(loginDto);
             }
-            var tokenDto = new TokenDto()
-            {
-                Email = user.Email,
-                Token = jwtService.CreatToken(user)
-            };
-            return Ok(tokenDto);
-        }
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                _cookieService.GetPrincipal(user, CookieAuthenticationDefaults.AuthenticationScheme));
+            return Ok();
+        }*/
     }
 }
