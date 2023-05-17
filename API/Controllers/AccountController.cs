@@ -19,9 +19,9 @@ namespace API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
         private readonly ICookieService _cookieService;
         private readonly IMapper _mapper;
-        private readonly SignInManager<AppUser> _signInManager;
 
         public AccountController(UserManager<AppUser> userManager, ICookieService cookieService,
             IMapper mapper, SignInManager<AppUser> signInManager)
@@ -115,7 +115,7 @@ namespace API.Controllers
             return Ok(user);
         }*/
         // POST: api/account/login
-        /*[HttpPost("login")]
+        [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody] LoginDto loginDto)
         {
             if (!ModelState.IsValid)
@@ -135,6 +135,6 @@ namespace API.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 _cookieService.GetPrincipal(user, CookieAuthenticationDefaults.AuthenticationScheme));
             return Ok();
-        }*/
+        }
     }
 }

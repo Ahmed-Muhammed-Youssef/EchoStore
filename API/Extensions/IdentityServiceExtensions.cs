@@ -15,11 +15,10 @@ namespace API.Extensions
         {
             var builder = services.AddIdentityCore<AppUser>(options =>
             {
-                options.SignIn.RequireConfirmedAccount = true;
+                /*options.SignIn.RequireConfirmedAccount = true;*/
                 options.Password.RequireNonAlphanumeric = false;
             })
                 .AddEntityFrameworkStores<AppIdentityDbContext>()
-                .AddUserManager<UserManager<AppUser>>()
                 .AddSignInManager<SignInManager<AppUser>>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
