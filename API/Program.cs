@@ -36,6 +36,8 @@ builder.Services.AddDbContext<StoreContext>(options =>
     }
 }
 );
+
+// Add the identity database
 builder.Services.AddDbContext<AppIdentityDbContext>(options => {
     if (builder.Environment.EnvironmentName == "Development")
     {
@@ -55,7 +57,7 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(config => {
 });
 
 // Services
-builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<ICookieService, CookieService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService, PaymantService>();
 builder.Services.AddSingleton<IResponseCacheService, ResponseCacheService>();
@@ -76,25 +78,6 @@ builder.Services.AddCors(options => options.AddPolicy(
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
-    var securityScheme = new OpenApiSecurityScheme
-    {
-        Description = "JWT Auth Bearer Scheme",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        Reference = new OpenApiReference()
-        {
-            Type = ReferenceType.SecurityScheme,
-            Id = "bearer"
-        }
-    };
-    c.AddSecurityDefinition("bearer", securityScheme);
-    var securityRequirement = new OpenApiSecurityRequirement()
-                {
-                    { securityScheme, new[]{"bearer"} }
-                };
-    c.AddSecurityRequirement(securityRequirement);
 });
 // Endpoint resolver
 builder.Services.AddControllers();

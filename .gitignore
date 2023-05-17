@@ -460,3 +460,5 @@ $RECYCLE.BIN/
 API/EchoStore.db
 /API/EchoStore.db-wal
 /API/EchoStore.db-shm
+/api/Identity.db-wal
+/api/Identity.db-shm
