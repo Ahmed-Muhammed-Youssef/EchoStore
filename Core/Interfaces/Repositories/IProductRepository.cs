@@ -11,7 +11,7 @@ namespace Core.Interfaces.Repositories
     {
         // CRUD products
         Task<Product> AddProductAsync(Product product);
-        void RemoveProduct(Product product);
+        Task RemoveProductAsync(Product product);
         Task<IReadOnlyList<Product>> GetProductsByProductInfoIdAsync(int productInfoId, int quantity);
         Task<int> GetProductsCountPerProductInfoAsync(int productInfoId);
         Task<ProductInfo> AddProductInfoAsync(ProductInfo product);
@@ -19,6 +19,8 @@ namespace Core.Interfaces.Repositories
         void DeleteProductInfo(ProductInfo productInfo);
         void DeleteProduct(Product product);
         void UpdateProductInfo(ProductInfo product);
+        Task<bool> AnyProductInfoAsync();
+        Task<bool> AnyProductAsync();
         IReadOnlyList<ProductInfo> GetProductsInfo(Expression<Func<ProductInfo, bool>> filter,
             Expression<Func<ProductInfo, object>> orderBy, ref PaginationInfo paginationInfo);
     }

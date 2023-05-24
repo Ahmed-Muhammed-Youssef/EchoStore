@@ -21,11 +21,11 @@ namespace Infrastructure.Data.Repositories
         public async Task<Product> AddProductAsync(Product product)
         {
             var d = await _storeContext.Products.AddAsync(product);
-            var pi = await _storeContext.Products.Where(p => p.Id == d.Entity.Id).Select(p => p.ProductInfo).FirstOrDefaultAsync();
+            var pi = await _storeContext.ProductInfo.Where(p => p.Id == product.ProductInfoId).FirstOrDefaultAsync();
             IncrementProductInfoAmount(pi);
             return d.Entity;
         }
-        public void RemoveProduct(Product product)
+        public async Task RemoveProductAsync(Product product)
         {
             if (product is null)
             {
@@ -37,6 +37,11 @@ namespace Infrastructure.Data.Repositories
             }
 
             var d = _storeContext.Products.Remove(product);
+            var pi = product.ProductInfo;
+            if(pi == null)
+            {
+                pi = await _storeContext.ProductInfo.FindAsync(product.ProductInfoId);
+            }
             DecrementProductInfoAmount(product.ProductInfo);
         }
         public async Task<IReadOnlyList<Product>> GetProductsByProductInfoIdAsync(int productInfoId, int quantity)
@@ -48,6 +53,8 @@ namespace Infrastructure.Data.Repositories
         }
         public async Task<ProductInfo> AddProductInfoAsync(ProductInfo productInfo)
         {
+            // must be 0 to pervent invalid object states in the database.
+            productInfo.AvailableAmount = 0;
             var d = await _storeContext.ProductInfo.AddAsync(productInfo);
             return d.Entity;
         }
@@ -107,16 +114,24 @@ namespace Infrastructure.Data.Repositories
             _storeContext.Entry(product).State = EntityState.Modified;
         }
        
+        public async Task<bool> AnyProductInfoAsync()
+        {
+            return await _storeContext.ProductInfo.AnyAsync();
+        } 
+        public async Task<bool> AnyProductAsync()
+        {
+            return await _storeContext.Products.AnyAsync();
+        } 
         // Utitlity
-        private void IncrementProductInfoAmount(ProductInfo productInfoId)
+        private void IncrementProductInfoAmount(ProductInfo productInfo)
         {
-            productInfoId.AvailableAmount++;
-            UpdateProductInfo(productInfoId);
+            productInfo.AvailableAmount++;
+            UpdateProductInfo(productInfo);
         }
-        private void DecrementProductInfoAmount(ProductInfo productInfoId)
+        private void DecrementProductInfoAmount(ProductInfo productInfo)
         {
-            if (productInfoId.AvailableAmount > 1) { productInfoId.AvailableAmount--; }
-            UpdateProductInfo(productInfoId);
+            if (productInfo.AvailableAmount > 1) { productInfo.AvailableAmount--; }
+            UpdateProductInfo(productInfo);
         }
 
     }
