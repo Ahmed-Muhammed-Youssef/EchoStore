@@ -1,4 +1,4 @@
-﻿using Core.Interfaces;
+﻿using Core.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace API.Helpers
 {
-     
+
     /// <summary>
     /// Caching for static content endpoints
     /// </summary>

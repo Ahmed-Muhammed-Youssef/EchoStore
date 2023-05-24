@@ -1,7 +1,7 @@
 ﻿using Core.Entities.OrderAggregate;
 using System.Threading.Tasks;
 
-namespace Core.Interfaces
+namespace Core.Interfaces.Services
 {
     public interface IPaymentService
     {

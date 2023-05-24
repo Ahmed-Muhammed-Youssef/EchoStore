@@ -1,12 +1,12 @@
 ﻿using Core.Entities.OrderAggregate;
-using Core.Interfaces;
+using Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Data
+namespace Infrastructure.Data.Repositories
 {
     internal class OrderRepository : IOrderRepository
     {
@@ -35,14 +35,14 @@ namespace Infrastructure.Data
             {
                 throw new Exception($"the available quantity of this product is less than {orderedProductInfo.Quantity}");
             }
-            
+
             await _storeContext.OrderedProductInfo.AddAsync(orderedProductInfo);
             return orderedProductInfo;
         }
 
         public void DeleteOrder(Order order)
         {
-            var r =  _storeContext.Orders.Remove(order);
+            var r = _storeContext.Orders.Remove(order);
         }
 
         public async Task<IReadOnlyList<Order>> GetCurrentUserOrdersAsync(string userEmail)
@@ -73,7 +73,7 @@ namespace Infrastructure.Data
 
         public async Task<Order> GetOrderByPaymentIntent(string paymentIntentId)
         {
-           return await _storeContext.Orders.FirstOrDefaultAsync(o => o.PaymentIntentId == paymentIntentId);
+            return await _storeContext.Orders.FirstOrDefaultAsync(o => o.PaymentIntentId == paymentIntentId);
         }
     }
 }

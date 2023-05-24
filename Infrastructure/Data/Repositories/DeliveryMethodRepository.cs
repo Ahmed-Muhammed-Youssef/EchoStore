@@ -1,11 +1,11 @@
 ﻿using Core.Entities.OrderAggregate;
-using Core.Interfaces;
+using Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Data
+namespace Infrastructure.Data.Repositories
 {
     public class DeliveryMethodRepository : IDeliveryMethodRepository
     {

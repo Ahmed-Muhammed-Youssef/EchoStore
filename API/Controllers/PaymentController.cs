@@ -1,7 +1,7 @@
 ﻿using API.DTOs;
 using AutoMapper;
 using Core.Entities.OrderAggregate;
-using Core.Interfaces;
+using Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Framework;

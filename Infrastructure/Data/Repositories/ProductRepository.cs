@@ -1,5 +1,5 @@
 ﻿using Core.Entities;
-using Core.Interfaces;
+using Core.Interfaces.Repositories;
 using Core.Pagination;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Data
+namespace Infrastructure.Data.Repositories
 {
     public class ProductRepository : IProductRepository
     {
@@ -103,7 +103,7 @@ namespace Infrastructure.Data
         {
             if (orderBy == null)
             {
-                orderBy = (p => p.Id);
+                orderBy = p => p.Id;
             }
             var productsQuery = _storeContext.ProductInfo
                 .AsNoTracking()
@@ -145,7 +145,7 @@ namespace Infrastructure.Data
         {
             _storeContext.Entry(productType).State = EntityState.Modified;
         }
-        
+
         // Utitlity
         private void IncrementProductInfoAmount(ProductInfo productInfoId)
         {

@@ -2,6 +2,7 @@ using API.Extensions;
 using API.Helpers;
 using API.Middleware;
 using Core.Interfaces;
+using Core.Interfaces.Services;
 using Infrastructure.Data;
 using Infrastructure.Identity;
 using Infrastructure.Services;
@@ -124,8 +125,6 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
+app.MapControllers();
+
 await app.RunAsync();

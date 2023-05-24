@@ -2,7 +2,7 @@
 using API.Extensions;
 using AutoMapper;
 using Core.Entities.Identity;
-using Core.Interfaces;
+using Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;

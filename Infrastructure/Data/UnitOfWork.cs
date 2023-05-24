@@ -1,4 +1,6 @@
 ﻿using Core.Interfaces;
+using Core.Interfaces.Repositories;
+using Infrastructure.Data.Repositories;
 using StackExchange.Redis;
 using System.Threading.Tasks;
 
