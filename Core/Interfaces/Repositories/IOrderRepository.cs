@@ -13,5 +13,8 @@ namespace Core.Interfaces.Repositories
         public Task<Order> CreateOrderAsync(Order order);
         public void UpdateOrder(Order order);
         public void DeleteOrder(Order order);
+        public Task<bool> AnyOrderInfoAsync();
+        public Task<bool> AnyOrderAsync();
+
     }
 }

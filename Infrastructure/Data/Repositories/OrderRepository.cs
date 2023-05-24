@@ -75,5 +75,13 @@ namespace Infrastructure.Data.Repositories
         {
             return await _storeContext.Orders.FirstOrDefaultAsync(o => o.PaymentIntentId == paymentIntentId);
         }
+        public async Task<bool> AnyOrderAsync()
+        {
+            return await _storeContext.Orders.AnyAsync();
+        }
+        public async Task<bool> AnyOrderInfoAsync()
+        {
+            return await _storeContext.OrderedProductInfo.AnyAsync();
+        }
     }
 }
