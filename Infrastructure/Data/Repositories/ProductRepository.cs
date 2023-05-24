@@ -58,12 +58,7 @@ namespace Infrastructure.Data.Repositories
                 .Where(p => p.ProductInfoId == productInfoId)
                 .CountAsync();
         }
-        public async Task<ProductType> AddProductTypeAsync(ProductType productType)
-        {
-            var d = await _storeContext.ProductTypes.AddAsync(productType);
-            return d.Entity;
-        }
-        
+       
         public void DeleteProductInfo(ProductInfo productInfo)
         {
             var d = _storeContext.ProductInfo.Remove(productInfo);
@@ -72,11 +67,7 @@ namespace Infrastructure.Data.Repositories
         {
             var d = _storeContext.Products.Remove(product);
         }
-        public void DeleteProductType(ProductType productType)
-        {
-            var d = _storeContext.ProductTypes.Remove(productType);
-        }
-        
+       
         public async Task<ProductInfo> GetProductInfoByIdAsync(int id)
         {
             var product = await _storeContext.ProductInfo
@@ -105,13 +96,7 @@ namespace Infrastructure.Data.Repositories
                 .Take(paginationInfo.PageSize).ToList();
             return products;
         }
-        public async Task<ProductType> GetProductTypeAsync(int id) => await _storeContext.ProductTypes
-            .AsNoTracking()
-            .FirstOrDefaultAsync(type => type.Id == id);
-        public async Task<IReadOnlyList<ProductType>> GetProductTypesAsync() => await _storeContext.ProductTypes
-            .AsNoTracking()
-            .ToListAsync();
-       
+        
         public void UpdateProductInfo(ProductInfo product)
         {
             if (product is null)
@@ -121,11 +106,7 @@ namespace Infrastructure.Data.Repositories
 
             _storeContext.Entry(product).State = EntityState.Modified;
         }
-        public void UpdateProductType(ProductType productType)
-        {
-            _storeContext.Entry(productType).State = EntityState.Modified;
-        }
-
+       
         // Utitlity
         private void IncrementProductInfoAmount(ProductInfo productInfoId)
         {

@@ -11,6 +11,7 @@ namespace Core.Interfaces
         public IOrderRepository OrderRepository { get;  }
         public IProductRepository ProductRepository { get;  }
         public IBrandRepository BrandRepository { get;  }
+        public IProductTypeRepository ProductTypeRepository { get;  }
         public bool HasChanges();
         public Task<int> Complete();
     }

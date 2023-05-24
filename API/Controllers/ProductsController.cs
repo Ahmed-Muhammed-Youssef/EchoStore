@@ -219,7 +219,7 @@ namespace API.Controllers
         [Cached(1000)]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductTypes()
         {
-            var types = await _unitOfWork.ProductRepository.GetProductTypesAsync();
+            var types = await _unitOfWork.ProductTypeRepository.GetProductTypesAsync();
             return Ok(types);
         }
         // GET: api/products/types/5
@@ -227,7 +227,7 @@ namespace API.Controllers
         [Cached(1000)]
         public async Task<ActionResult<ProductBrand>> GetProductType(int id)
         {
-            var productType = await _unitOfWork.ProductRepository.GetProductTypeAsync(id);
+            var productType = await _unitOfWork.ProductTypeRepository.GetProductTypeAsync(id);
 
             if (productType == null)
             {
@@ -240,13 +240,13 @@ namespace API.Controllers
         [HttpDelete("types/{id}")]
         public async Task<ActionResult> DeleteProductType(int id)
         {
-            var type = await _unitOfWork.ProductRepository.GetProductTypeAsync(id);
+            var type = await _unitOfWork.ProductTypeRepository.GetProductTypeAsync(id);
 
             if (type == null)
             {
                 return NotFound();
             }
-            _unitOfWork.ProductRepository.DeleteProductType(type);
+            _unitOfWork.ProductTypeRepository.DeleteProductType(type);
             var res = await _unitOfWork.Complete();
             if (res <= 0)
             {
@@ -262,7 +262,7 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid data");
             }
-            type = await _unitOfWork.ProductRepository.AddProductTypeAsync(type);
+            type = await _unitOfWork.ProductTypeRepository.AddProductTypeAsync(type);
             var res = await _unitOfWork.Complete();
             if (res <= 0)
             {
@@ -279,11 +279,11 @@ namespace API.Controllers
                 return BadRequest("Invalid data");
             }
 
-            if (await _unitOfWork.ProductRepository.GetProductTypeAsync(type.Id) == null)
+            if (await _unitOfWork.ProductTypeRepository.GetProductTypeAsync(type.Id) == null)
             {
                 return NotFound();
             }
-            _unitOfWork.ProductRepository.UpdateProductType(type);
+            _unitOfWork.ProductTypeRepository.UpdateProductType(type);
             var res = await _unitOfWork.Complete();
             if (res <= 0)
             {
