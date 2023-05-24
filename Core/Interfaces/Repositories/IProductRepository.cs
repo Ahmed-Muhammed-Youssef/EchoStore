@@ -21,12 +21,7 @@ namespace Core.Interfaces.Repositories
         void UpdateProductInfo(ProductInfo product);
         IReadOnlyList<ProductInfo> GetProductsInfo(Expression<Func<ProductInfo, bool>> filter,
             Expression<Func<ProductInfo, object>> orderBy, ref PaginationInfo paginationInfo);
-        // CRUD brands
-        Task<ProductBrand> AddProductBrandAsync(ProductBrand productBrand);
-        Task<IReadOnlyList<ProductBrand>> GetBrandsAsync();
-        Task<ProductBrand> GetBrandAsync(int id);
-        void DeleteBrand(ProductBrand productBrand);
-        void UpdateBrand(ProductBrand productBrand);
+        
         // CRUD product types
         Task<ProductType> AddProductTypeAsync(ProductType productType);
         Task<IReadOnlyList<ProductType>> GetProductTypesAsync();

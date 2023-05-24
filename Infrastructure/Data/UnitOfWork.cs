@@ -15,6 +15,8 @@ namespace Infrastructure.Data
         public IDeliveryMethodRepository DeliveryMethodRepository => new DeliveryMethodRepository(_storeContext);
         public IOrderRepository OrderRepository => new OrderRepository(_storeContext);
         public IProductRepository ProductRepository => new ProductRepository(_storeContext);
+        public IBrandRepository BrandRepository => new BrandRepository(_storeContext);
+
 
         public UnitOfWork(StoreContext storeContext, IConnectionMultiplexer redis)
         {

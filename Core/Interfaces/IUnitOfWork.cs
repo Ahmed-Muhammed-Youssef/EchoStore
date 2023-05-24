@@ -10,6 +10,7 @@ namespace Core.Interfaces
         public IDeliveryMethodRepository DeliveryMethodRepository { get;  }
         public IOrderRepository OrderRepository { get;  }
         public IProductRepository ProductRepository { get;  }
+        public IBrandRepository BrandRepository { get;  }
         public bool HasChanges();
         public Task<int> Complete();
     }

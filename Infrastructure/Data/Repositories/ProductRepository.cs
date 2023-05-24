@@ -51,11 +51,7 @@ namespace Infrastructure.Data.Repositories
             var d = await _storeContext.ProductInfo.AddAsync(productInfo);
             return d.Entity;
         }
-        public async Task<ProductBrand> AddProductBrandAsync(ProductBrand productBrand)
-        {
-            var d = await _storeContext.ProductBrands.AddAsync(productBrand);
-            return d.Entity;
-        }
+        
         public async Task<int> GetProductsCountPerProductInfoAsync(int productInfoId)
         {
             return await _storeContext.Products
@@ -67,10 +63,7 @@ namespace Infrastructure.Data.Repositories
             var d = await _storeContext.ProductTypes.AddAsync(productType);
             return d.Entity;
         }
-        public void DeleteBrand(ProductBrand productBrand)
-        {
-            var d = _storeContext.ProductBrands.Remove(productBrand);
-        }
+        
         public void DeleteProductInfo(ProductInfo productInfo)
         {
             var d = _storeContext.ProductInfo.Remove(productInfo);
@@ -83,12 +76,7 @@ namespace Infrastructure.Data.Repositories
         {
             var d = _storeContext.ProductTypes.Remove(productType);
         }
-        public async Task<ProductBrand> GetBrandAsync(int id) => await _storeContext.ProductBrands
-            .AsNoTracking()
-            .FirstOrDefaultAsync(brand => brand.Id == id);
-        public async Task<IReadOnlyList<ProductBrand>> GetBrandsAsync() => await _storeContext.ProductBrands
-            .AsNoTracking()
-            .ToListAsync();
+        
         public async Task<ProductInfo> GetProductInfoByIdAsync(int id)
         {
             var product = await _storeContext.ProductInfo
@@ -123,15 +111,7 @@ namespace Infrastructure.Data.Repositories
         public async Task<IReadOnlyList<ProductType>> GetProductTypesAsync() => await _storeContext.ProductTypes
             .AsNoTracking()
             .ToListAsync();
-        public void UpdateBrand(ProductBrand productBrand)
-        {
-            if (productBrand is null)
-            {
-                throw new ArgumentNullException(nameof(productBrand));
-            }
-
-            _storeContext.Entry(productBrand).State = EntityState.Modified;
-        }
+       
         public void UpdateProductInfo(ProductInfo product)
         {
             if (product is null)

@@ -138,7 +138,7 @@ namespace API.Controllers
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
         {
-            var brands = await _unitOfWork.ProductRepository.GetBrandsAsync();
+            var brands = await _unitOfWork.BrandRepository.GetBrandsAsync();
             return Ok(brands);
         }
         // GET: api/products/brands/5
@@ -146,7 +146,7 @@ namespace API.Controllers
         [HttpGet("brands/{id}")]
         public async Task<ActionResult<ProductBrand>> GetProductBrand(int id)
         {
-            var productBrand = await _unitOfWork.ProductRepository.GetBrandAsync(id);
+            var productBrand = await _unitOfWork.BrandRepository.GetBrandAsync(id);
 
             if (productBrand == null)
             {
@@ -159,13 +159,13 @@ namespace API.Controllers
         [HttpDelete("brands/{id}")]
         public async Task<ActionResult> DeleteProductBrand(int id)
         {
-            var brand = await _unitOfWork.ProductRepository.GetBrandAsync(id);
+            var brand = await _unitOfWork.BrandRepository.GetBrandAsync(id);
 
             if (brand == null)
             {
                 return NotFound();
             }
-            _unitOfWork.ProductRepository.DeleteBrand(brand);
+            _unitOfWork.BrandRepository.DeleteBrand(brand);
             var res = await _unitOfWork.Complete();
             if (res <= 0)
             {
@@ -181,7 +181,7 @@ namespace API.Controllers
             {
                 return BadRequest("Invalid data");
             }
-            var brand = await _unitOfWork.ProductRepository.AddProductBrandAsync(newProductBrand);
+            var brand = await _unitOfWork.BrandRepository.AddProductBrandAsync(newProductBrand);
             var res = await _unitOfWork.Complete();
             if (res <= 0)
             {
@@ -198,11 +198,11 @@ namespace API.Controllers
                 return BadRequest("Invalid data");
             }
 
-            if (await _unitOfWork.ProductRepository.GetBrandAsync(brand.Id) == null)
+            if (await _unitOfWork.BrandRepository.GetBrandAsync(brand.Id) == null)
             {
                 return NotFound();
             }
-            _unitOfWork.ProductRepository.UpdateBrand(brand);
+            _unitOfWork.BrandRepository.UpdateBrand(brand);
             var res = await _unitOfWork.Complete();
             if (res <= 0)
             {
