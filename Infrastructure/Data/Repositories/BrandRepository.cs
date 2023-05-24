@@ -39,5 +39,9 @@ namespace Infrastructure.Data.Repositories
 
             _storeContext.Entry(productBrand).State = EntityState.Modified;
         }
+        public async Task<bool> AnyAsync()
+        {
+            return await _storeContext.ProductBrands.AnyAsync();
+        }
     }
 }

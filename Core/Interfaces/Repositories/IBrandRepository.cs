@@ -11,5 +11,6 @@ namespace Core.Interfaces.Repositories
         Task<ProductBrand> GetBrandAsync(int id);
         void DeleteBrand(ProductBrand productBrand);
         void UpdateBrand(ProductBrand productBrand);
+        public Task<bool> AnyAsync();
     }
 }
