@@ -14,5 +14,6 @@ namespace Core.Interfaces.Repositories
         Task<ProductType> GetProductTypeAsync(int id);
         void DeleteProductType(ProductType productType);
         void UpdateProductType(ProductType productType);
+        public Task<bool> AnyAsync();
     }
 }
