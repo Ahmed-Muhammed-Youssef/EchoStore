@@ -35,7 +35,6 @@ namespace Infrastructure.Data.Repositories
             return await _storeContext.DeliveryMethods.FindAsync(id);
         }
 
-
         public void RemoveAsync(DeliveryMethod deliveryMethod)
         {
             if (deliveryMethod is null)
@@ -44,6 +43,11 @@ namespace Infrastructure.Data.Repositories
             }
 
             var res = _storeContext.DeliveryMethods.Remove(deliveryMethod);
+        }
+
+        public async Task<bool> AnyAsync()
+        {
+            return await _storeContext.DeliveryMethods.AnyAsync();
         }
     }
 }

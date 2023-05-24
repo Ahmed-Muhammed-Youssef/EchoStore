@@ -16,5 +16,6 @@ namespace Core.Interfaces.Repositories
         // DELETE
         public void RemoveAsync(DeliveryMethod deliveryMethod);
 
+        public Task<bool> AnyAsync();
     }
 }
