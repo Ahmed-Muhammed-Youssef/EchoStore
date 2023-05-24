@@ -27,9 +27,9 @@ namespace API.Controllers
         [Cached(1000)]
         [HttpGet]
         public ActionResult<List<ProductInfoDto>> GetProductsInfo(string sortBy, int? brandId, int? typeId,
-            string search = "", [FromHeader] int pageNumber = 0, [FromHeader] int pageSize = 4)
+            string search = "", int pageNumber = 1, int pageSize = 4)
         {
-            var pInfo = new PaginationInfo(pageSize: pageSize, currentPageNumber: pageNumber);
+            var pInfo = new PaginationInfo(pageSize: pageSize - 1, currentPageNumber: pageNumber);
             search = search.ToLower();
             Expression<Func<ProductInfo, object>> orderBy = p => p.Name;
             Expression<Func<ProductInfo, bool>> filter = p => true;
@@ -58,10 +58,10 @@ namespace API.Controllers
                 orderBy: orderBy,
                 paginationInfo: ref pInfo
             );
-            HttpContext.Response.Headers.Add("PaginationNumberOfItems", pInfo.NumberOfItems.ToString());
+         /*   HttpContext.Response.Headers.Add("PaginationNumberOfItems", pInfo.NumberOfItems.ToString());
             HttpContext.Response.Headers.Add("PaginationPageNumber", pInfo.CurrentPageNumber.ToString());
             HttpContext.Response.Headers.Add("PaginationPageSize", pInfo.PageSize.ToString());
-            HttpContext.Response.Headers.Add("PaginationLastPage", pInfo.LastPage.ToString());
+            HttpContext.Response.Headers.Add("PaginationLastPage", pInfo.LastPage.ToString());*/
             return Ok(products.Select(p => mapper.Map<ProductInfo, ProductInfoDto>(p)));
         }
         // GET: api/products/5
