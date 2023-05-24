@@ -1,12 +1,15 @@
 using API.Extensions;
 using API.Helpers;
 using API.Middleware;
+using Core.Entities.Identity;
 using Core.Interfaces;
 using Core.Interfaces.Services;
 using Infrastructure.Data;
+using Infrastructure.Data.Seeding;
 using Infrastructure.Identity;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -85,23 +88,39 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Auto Migrations
+// Auto Migrations / Seeding
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var loggerFactory = services.GetRequiredService<ILoggerFactory>();
     try
     {
-        var context = services.GetRequiredService<StoreContext>();
-        await context.Database.MigrateAsync();
+        // migrating
+        var storeContext = services.GetRequiredService<StoreContext>();
+        await storeContext.Database.MigrateAsync();
     }
     catch (Exception ex)
     {
         var logger = loggerFactory.CreateLogger<Program>();
         logger.LogError(ex, "Migration Failed.");
     }
-}
+    try
+    {
+        // seeding products-related data
+        var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+        await SeedStoreContext.SeedAsync(unitOfWork);
+        
+        // seeding users
+        var userManager = services.GetRequiredService<UserManager<AppUser>>();
+        await AppIdentityDbContextSeed.SeedUsersAsync(userManager);
+    }
+    catch(Exception ex)
+    {
+        var logger = loggerFactory.CreateLogger<Program>();
+        logger.LogError(ex, "Seeding Failed.");
 
+    }
+}
 // Configure the HTTP request pipeline
 
 
