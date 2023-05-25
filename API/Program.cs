@@ -10,6 +10,7 @@ using Infrastructure.Identity;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -68,7 +69,13 @@ builder.Services.AddSingleton<IResponseCacheService, ResponseCacheService>();
 
 // third-party libraries
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
-
+builder.Services.AddApiVersioning(options =>
+{
+    options.ReportApiVersions = true;
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+    options.ApiVersionReader = new HeaderApiVersionReader("Echo-API-Version");
+});
 // identity service extension method
 builder.Services.AddIdentityService(builder.Configuration);
 builder.Services.AddCors(options => options.AddPolicy(
