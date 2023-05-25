@@ -4,7 +4,6 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # Additional files
-appsettings.Development.json
 SeedQueries/
 ssl
 Identity.db
@@ -462,3 +461,4 @@ API/EchoStore.db
 /API/EchoStore.db-shm
 /api/Identity.db-wal
 /api/Identity.db-shm
+
