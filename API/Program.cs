@@ -141,6 +141,10 @@ if (app.Environment.EnvironmentName == "Development")
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
 }
+else
+{
+    app.UseHsts();
+}
 
 app.UseCustomExceptionPage();
 
