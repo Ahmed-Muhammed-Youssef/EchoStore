@@ -76,6 +76,11 @@ builder.Services.AddApiVersioning(options =>
     options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
     options.ApiVersionReader = new HeaderApiVersionReader("Echo-API-Version");
 });
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
 // identity service extension method
 builder.Services.AddIdentityService(builder.Configuration);
 builder.Services.AddCors(options => options.AddPolicy(
