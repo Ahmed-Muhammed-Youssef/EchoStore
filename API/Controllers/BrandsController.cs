@@ -14,7 +14,7 @@ namespace API.Controllers
     /// <summary>
     ///  Crud APIs for brands
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("api/brands")]
     [ApiController]
     public class BrandsController : ControllerBase
     {
@@ -25,12 +25,20 @@ namespace API.Controllers
             _unitOfWork = unitOfWork;
         }
         // GET: api/brands
+        [ApiVersion("1.0")]
         [Cached(1000)]
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrandsV1()
         {
             var brands = await _unitOfWork.BrandRepository.GetBrandsAsync();
             return Ok(brands);
+        }
+        [ApiVersion("2.0")]
+        [HttpGet]
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrandsV2()
+        {
+            var brands = await _unitOfWork.BrandRepository.GetBrandsAsync();
+            return Ok(brands.Where(b => b.Name.StartsWith('S')));
         }
         // GET: api/brands/5
         [Cached(1000)]
