@@ -7,4 +7,15 @@ and install [Redis](https://redis.io/docs/getting-started/installation/install-r
 * Clone the project, then open up you terminal, go to the `EchoStore/API/` path and type `dotnet run` and press enter.
 * Open up your favorite browser, and navigate `https://localhost:5001/swagger/index.html`.
 Note: the 5001 port number in the url depends on your OS, the port that the asp.net core app listens on, appears after you execute the `dotnet run` command.
-* Navigate the APIs using swagger UI.
+* Navigate the APIs using swagger UI. To be authenticated use the following credentials on the login endpoint, Email: `admin@admin.admin` , Password: `P@$$w0rd`
+
+## Technologies Used
+* EF Core
+* Identity
+* Redis
+* Stripe
+* AutoMapper
+* xUnit
+## Design Patterns
+* Repository
+* Unit of Work
