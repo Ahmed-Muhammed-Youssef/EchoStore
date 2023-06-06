@@ -1,5 +1,5 @@
-﻿using API.DTOs;
-using API.Extensions;
+﻿using Asp.DTOs;
+using Asp.Extensions;
 using AutoMapper;
 using Core.Entities.OrderAggregate;
 using Core.Interfaces.Services;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace API.Controllers
+namespace Asp.API
 {
     [Authorize]
     [Route("api/[controller]")]

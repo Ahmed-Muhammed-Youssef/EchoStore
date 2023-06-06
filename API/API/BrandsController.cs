@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Core.Entities;
 using Infrastructure.Data;
-using API.Helpers;
+using Asp.Helpers;
 using Core.Interfaces;
 using System;
 
-namespace API.Controllers
+namespace Asp.API
 {
     /// <summary>
     ///  Crud APIs for brands

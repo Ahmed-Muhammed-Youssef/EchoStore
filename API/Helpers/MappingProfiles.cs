@@ -1,9 +1,9 @@
-﻿using API.DTOs;
+﻿using Asp.DTOs;
 using AutoMapper;
 using Core.Entities;
 using Core.Entities.Identity;
 
-namespace API.Helpers
+namespace Asp.Helpers
 {
     public class MappingProfiles : Profile
     {

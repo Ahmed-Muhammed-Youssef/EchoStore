@@ -1,5 +1,5 @@
-﻿using API.DTOs;
-using API.Extensions;
+﻿using Asp.DTOs;
+using Asp.Extensions;
 using AutoMapper;
 using Core.Entities.Identity;
 using Core.Interfaces.Services;
@@ -12,7 +12,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace API.Controllers
+namespace Asp.API
 {
     [ApiController]
     [Route("api/[controller]")]

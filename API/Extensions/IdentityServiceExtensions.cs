@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace API.Extensions
+namespace Asp.Extensions
 {
     public static class IdentityServiceExtensions
     {

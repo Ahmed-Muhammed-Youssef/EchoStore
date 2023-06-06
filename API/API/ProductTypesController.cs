@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Core.Interfaces;
-using API.Helpers;
+using Asp.Helpers;
 using Core.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 
-namespace API.Controllers
+namespace Asp.API
 {
     /// <summary>
     ///  Crud APIs for ProductTypes

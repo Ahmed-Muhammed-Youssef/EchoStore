@@ -1,9 +1,9 @@
-﻿using API.DTOs;
+﻿using Asp.DTOs;
 using AutoMapper;
 using Core.Entities;
 using Microsoft.Extensions.Configuration;
 
-namespace API.Helpers
+namespace Asp.Helpers
 {
     public class ProductUrlResolver : IValueResolver<ProductInfo, ProductInfoDto, string>
     {

@@ -1,9 +1,9 @@
-﻿using API.DTOs;
+﻿using Asp.DTOs;
 using AutoMapper;
 using Core.Entities.OrderAggregate;
 using Microsoft.Extensions.Configuration;
 
-namespace API.Helpers
+namespace Asp.Helpers
 {
     public class OrderUrlResolver : IValueResolver<OrderedProductInfo, OrderedProductInfoDto, string>
     {

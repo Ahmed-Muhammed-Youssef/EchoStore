@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace API.DTOs
+namespace Asp.DTOs
 {
     public class CartDto
     {

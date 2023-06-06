@@ -1,4 +1,4 @@
-﻿using API.DTOs;
+﻿using Asp.DTOs;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace API.Controllers
+namespace Asp.API
 {
     [Route("api/[controller]")]
     [ApiController]

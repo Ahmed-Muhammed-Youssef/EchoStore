@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
-namespace API.Extensions
+namespace Asp.Extensions
 {
     public static class UserManagerExtensions
     {
