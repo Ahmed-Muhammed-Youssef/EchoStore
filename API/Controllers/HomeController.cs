@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing.Printing;
-using System.Globalization;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Asp.Models;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Pagination;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Asp.Controllers;
 
@@ -33,6 +28,12 @@ public class HomeController : Controller
             paginationInfo: ref paginationInfo
         );
         return View(products);
+    }
+    // GET: home/details/{id}
+    public async Task<ActionResult<ProductInfo>> Details(int id)
+    {
+        var pi = await _unitOfWork.ProductRepository.GetProductInfoByIdAsync(id);
+        return View(pi);
     }
 
     public IActionResult Privacy()

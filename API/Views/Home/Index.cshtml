@@ -1,6 +1,4 @@
-﻿@using Core.Entities;
-@using Infrastructure.Constants;
-@model IReadOnlyList<ProductInfo>
+﻿@model IReadOnlyList<ProductInfo>
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -28,7 +26,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <img src=@item?.PictureUrl class="img-fluid" alt="movie poster">
+                        <img src=@item?.PictureUrl class="img-fluid" alt="product picture">
                     </div>
                     <div class="col-md-6">
                         <div class="card-body">
