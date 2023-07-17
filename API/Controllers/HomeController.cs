@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Asp.Models;
 using Core.Entities;
@@ -34,6 +37,35 @@ public class HomeController : Controller
     {
         var pi = await _unitOfWork.ProductRepository.GetProductInfoByIdAsync(id);
         return View(pi);
+    }
+
+    // GET home/
+    public ActionResult<IReadOnlyList<ProductInfo>> Filter([FromQuery]int? productBrandId,
+        [FromQuery]int? productTypeId, [FromQuery] string search = "")
+    {
+        var paginationInfo = new PaginationInfo(numberOfItems: 13, 13, 0);
+        // filter construction
+        Func<ProductInfo, bool> filter1 = p => true;
+        Func<ProductInfo, bool> filter2 = p => true;
+        Func<ProductInfo, bool> filter3 = p => true;
+        if(productBrandId != null)
+        {
+            filter1 = p => p.ProductBrandId == productBrandId;
+        }
+        if(productTypeId != null)
+        {
+            filter2 = p => p.ProductTypeId == productTypeId;
+        }
+        if(!string.IsNullOrEmpty(search))
+        {
+            filter3 = p => p.Name.Contains(search);
+        }
+        var products = _unitOfWork.ProductRepository.GetProductsInfo(
+            filter: p => filter1(p) && filter2(p) && filter3(p),
+            orderBy: null,
+            paginationInfo: ref paginationInfo
+        );
+        return View("Index", products);
     }
 
     public IActionResult Privacy()

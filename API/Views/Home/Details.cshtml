@@ -31,7 +31,7 @@
                         </p>
                         <p class="card-text">
                             <b>Type: </b>
-                            <a asp-controller="Producers" asp-action="Details" asp-route-productTypeId="@Model?.ProductTypeId?">
+                            <a asp-controller="Home" asp-action="Filter" asp-route-productTypeId="@Model?.ProductTypeId">
                                 @Model?.ProductType?.Name
                             </a>
                         </p>
