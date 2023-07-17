@@ -25,7 +25,7 @@ public class HomeController : Controller
 
     public ActionResult<IReadOnlyList<ProductInfo>> Index()
     {
-        var paginationInfo = new PaginationInfo();
+        var paginationInfo = new PaginationInfo(numberOfItems: 13, 13, 0);
         
         var products =  _unitOfWork.ProductRepository.GetProductsInfo(
             filter: p => true,
